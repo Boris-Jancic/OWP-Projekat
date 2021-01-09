@@ -1,4 +1,4 @@
-package com.Projekat.Knjizara.models;
+package com.Projekat.Knjizara.models.enums;
 
 public enum ELetter {
     LATIN,

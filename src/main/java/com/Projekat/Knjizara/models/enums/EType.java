@@ -1,6 +1,6 @@
 package com.Projekat.Knjizara.models.enums;
 
-public enum ECover {
-    HARD,
-    SOFT
+public enum EType {
+    ADMIN,
+    CLIENT
 }
