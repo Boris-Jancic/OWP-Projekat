@@ -37,7 +37,7 @@ public class UserDaoImpl implements UserDao {
             Date dateOfBirth = rs.getDate(index++);
             String address = rs.getString(index++);
             String phone = rs.getString(index++);
-            Date dateOfRegistration = rs.getDate(index++);
+            String dateOfRegistration = rs.getString(index++);
             String type = rs.getString(index++);
             boolean active = rs.getBoolean(index++);
 
@@ -70,7 +70,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll(String username) {
+    public User checkLogin(String username, String password) {
+        try {
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            return jdbcTemplate.queryForObject(sql, new UserRowMapper(), username, password);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
@@ -98,10 +108,10 @@ public class UserDaoImpl implements UserDao {
     public void save(User user) {
         String sql = "INSERT INTO users (username, password, email, name, lastName, dateOfBirth, address, phone," +
                                         " dateOfRegistration, userType, active) " +
-                "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
-                                    user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(),
-                                        user.getDateOfRegistration(), user.getUserType(), user.isActive());
+                user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(), user.getDateOfRegistration(),
+                user.getUserType().toString(), user.isActive());
     }
 
     @Override
@@ -110,7 +120,7 @@ public class UserDaoImpl implements UserDao {
                 " dateOfRegistration = ?, userType = ?, active = ? ";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
                 user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(),
-                user.getDateOfRegistration(), user.getUserType(), user.isActive());
+                user.getDateOfRegistration(), user.getUserType().toString(), user.isActive());
     }
 
     @Override
