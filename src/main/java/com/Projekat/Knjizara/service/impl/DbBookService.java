@@ -21,7 +21,7 @@ public class DbBookService implements BookService {
     }
 
     @Override
-    public List<Book> findAll(String isbn) {
+    public List<Book> findAll() {
         return bookDao.findAll();
     }
 
