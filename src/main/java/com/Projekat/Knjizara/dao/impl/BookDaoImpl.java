@@ -37,7 +37,8 @@ public class BookDaoImpl implements BookDao {
             int pages = rs.getInt(index++);
             String cover = rs.getString(index++);
             String letter = rs.getString(index++);
-            String language = rs.getString(index++);
+            String language = rs.getString(index++);;
+            float price = rs.getFloat(index++);
             int remaining = rs.getInt(index++);
             float rating = rs.getInt(index++);
             boolean active = rs.getBoolean(index++);
@@ -55,6 +56,7 @@ public class BookDaoImpl implements BookDao {
             book.setTypeOfCover(ECover.valueOf(cover));
             book.setLetter(ELetter.valueOf(letter));
             book.setLanguage(language);
+            book.setPrice(price);
             book.setRating(rating);
             book.setRemaining(remaining);
             book.setActive(active);
@@ -125,23 +127,24 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void save(Book book) {
-        String sql = "INSERT INTO books (name, isbn, publisher, authors, released, description, picture, pages, cover, letter, language, remaining, rating, active) " +
-                     "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthors(),
-                                    book.getYearOfRelease(), book.getDescription(), book.getPicture(),
-                                        book.getNumOfPages(), book.getTypeOfCover(), book.getLetter(),
-                                            book.getLanguage(), book.getRemaining(), book.getRating(), book.isActive());
+        String sql = "INSERT INTO books (name, isbn, publisher, author, released, description, picture, pages, cover, letter, language, price, remaining, rating, active) " +
+                     "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthors(), book.getYearOfRelease(),
+                    book.getDescription(), book.getPicture(), book.getNumOfPages(), book.getTypeOfCover().toString(),
+                    book.getLetter().toString(), book.getLanguage(), book.getPrice(), book.getRemaining(), book.getRating(),
+                    book.isActive());
     }
 
     @Override
     public void update(Book book) {
-            String sql = "UPDATE books SET name = ?, isbn = ?, publisher = ?, authors = ?, released = ?, description = ?," +
-                         "                  picture = ?, pages = ?, cover = ?, letter = ?, language = ?, remaining = ?," +
-                         "                  rating = ?, active = ?";
+        String sql = "UPDATE books SET name = ?, isbn = ?, publisher = ?, author = ?, released = ?, description = ?," +
+                     "                  picture = ?, pages = ?, cover = ?, letter = ?, language = ?, price = ?," +
+                     "                  remaining = ?, rating = ?, active = ?" +
+                     "      WHERE isbn like ?";
         jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthors(),
-                book.getYearOfRelease(), book.getDescription(), book.getPicture(),
-                book.getNumOfPages(), book.getTypeOfCover(), book.getLetter(),
-                book.getLanguage(), book.getRemaining(), book.getRating(), book.isActive());
+                    book.getYearOfRelease(), book.getDescription(), book.getPicture(), book.getNumOfPages(),
+                    book.getTypeOfCover().toString(), book.getLetter().toString(), book.getLanguage(), book.getPrice(),
+                    book.getRemaining(), book.getRating(), book.isActive(), book.getIsbn());
     }
 
     @Override
