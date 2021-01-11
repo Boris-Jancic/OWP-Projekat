@@ -20,8 +20,13 @@ public class DbUserService implements UserService {
     }
 
     @Override
-    public List<User> findAll(String username) {
-        return userDao.findAll(username);
+    public User checkLogin(String username, String password) {
+        return userDao.checkLogin(username, password);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userDao.findAll();
     }
 
     @Override
