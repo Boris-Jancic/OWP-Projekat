@@ -9,7 +9,9 @@ public interface UserDao {
 
     public User findOne(String username);
 
-    public List<User> findAll(String username);
+    public User checkLogin(String username, String password);
+
+    public List<User> findAll();
 
     public List<User> find(String username);
 
