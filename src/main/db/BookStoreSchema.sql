@@ -10,11 +10,11 @@ CREATE TABLE books
     pages INT NOT NULL,
     cover VARCHAR(10) NOT NULL,
     letter VARCHAR(10) NOT NULL,
-    language VARCHAR(10) NOT NULL,
+    language VARCHAR(20) NOT NULL,
     price FLOAT NOT NULL,
     remaining INT NOT NULL,
     rating FLOAT,
-	active BIT NOT NULL
+	active BIT
 );
 
 CREATE TABLE bookGenres
@@ -64,7 +64,7 @@ CREATE TABLE users
 	dateOfBirth date NOT NULL,
     address VARCHAR(30) NOT NULL,
     phone VARCHAR(30) NOT NULL,
-	dateOfRegistration date NOT NULL,
+	dateOfRegistration VARCHAR(30) NOT NULL,
     userType  VARCHAR(30) NOT NULL,
 	active BIT NOT NULL
 );
