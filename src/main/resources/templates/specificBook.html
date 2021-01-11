@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+</head>
+<body>
+    <div class="read-more-container" th:fragment="centralDiv">
+
+        <link rel="stylesheet" href="../css/style.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <h2>Pregled knjige</h2>
+
+        <a href="../Korisnici/Logout">Odjavi se</a><br>
+        <a href="../Korisnici">Glavni meni</a><br>
+        <a href="../Knjige">Pregled knjiga</a><br>
+        <p th:text="${'Ulogovan je: ' + user.userName}"></p>
+        <p th:text="${'Tip korisnika: ' + user.userType}"></p><br>
+
+        <div class="description-container">
+            <img class="book-cover-readMore" id="book-img" th:src="${book.picture}">
+            <p id="name" th:text="${'Ime knjige: ' + book.name}"></p>
+            <p id="isbn" th:text="${'ISBN: ' + book.isbn}"></p>
+            <p id="author" th:text="${'Autor: ' + book.authors}"></p>
+            <p id="publisher" th:text="${'Izdavacka kuca: ' + book.publisher}"></p>
+            <p id="yearOfRelease" th:text="${'Godina izdavanja: ' + book.yearOfRelease}"></p>
+            <p id="shortDesc" th:text="${'Opis : ' + book.description}"></p>
+            <p id="pages" th:text="${'Broj stranica: ' + book.numOfPages}"></p>
+            <p id="cover" th:text="${'Korica: ' + book.typeOfCover}"></p>
+            <p id="letter" th:text="${'Pismo: ' + book.letter}"></p>
+            <p id="language" th:text="${'Jezik: ' + book.language}"></p>
+            <p id="rating" th:text="${'Ocena: ' + book.rating}"></p>
+            <h6 class="price" id="bookPrice" th:text="${'Cena: ' + book.price}"></h6>
+
+            <form method="get" action="Izmeni">
+                <input type="hidden" name="isbn" th:value="${book.isbn}">
+                <br>
+                <input type="submit" class="btnSubmit fadeIn fourth" value="Izmeni knjigu">
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

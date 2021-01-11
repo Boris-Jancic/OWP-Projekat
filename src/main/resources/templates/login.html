@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Knjizara</title>
+</head>
+<body>
+    <h2>Knjizara</h2>
+
+    <div class="container login-container">
+        <div class="row">
+            <div class="login-form-1">
+                <h3>Prijava na sistem</h3>
+                <form method="post" action="Korisnici/Login">
+                    <input type="text" id="login" class="fadeIn second" name="username" placeholder="Korisnicko ime" required>
+                    <br>
+                    <input type="password" id="password" class="fadeIn third" name="password" placeholder="Sifra" required>
+                    <br>
+                    <input type="submit" class="btnSubmit fadeIn fourth" value="Log In">
+                </form>
+                <br>
+                <a href="Korisnici/Registracija">Registruj se</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
