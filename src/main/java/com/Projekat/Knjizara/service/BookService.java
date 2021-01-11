@@ -8,7 +8,7 @@ public interface BookService {
 
     Book findOne(String isbn);
 
-    List<Book> findAll(String isbn);
+    List<Book> findAll();
 
     List<Book> find(String name, String author, String language);
 
