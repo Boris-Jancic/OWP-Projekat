@@ -19,7 +19,7 @@ public class User {
     private Date dateOfBirth;
     private String address;
     private String phone;
-    private Date dateOfRegistration;
+    private String dateOfRegistration;
     private EType userType;
     private boolean active;
 }
