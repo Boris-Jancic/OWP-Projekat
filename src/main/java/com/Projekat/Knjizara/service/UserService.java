@@ -9,7 +9,9 @@ public interface UserService {
 
     User findOne(String username);
 
-    List<User> findAll(String username);
+    User checkLogin(String username, String password);
+
+    List<User> findAll();
 
     List<User> find(String username);
 
