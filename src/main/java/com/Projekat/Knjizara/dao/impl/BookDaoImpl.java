@@ -82,47 +82,50 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public List<Book> find(String name, String author, String language) {// TODO: dodaj pretragu po zanru
+    public List<Book> find(String name, float minPrice, float maxPrice, String author, String language) {// TODO: dodaj pretragu po zanru
         ArrayList<Object> argumentList = new ArrayList<Object>();
 
-        String sql = "SELECT * FROM books";
+        String sql = "SELECT * FROM books b WHERE ";
 
-        StringBuffer whereSql = new StringBuffer(" WHERE ");
         boolean argumentExist = false;
 
-        if(name != null) {
+        if(!name.equals("")) {
             name = "%" + name + "%";
-            if(argumentExist)                whereSql.append(" AND ");
-            whereSql.append("name LIKE ?");
+            sql += "b.name LIKE ?";
             argumentExist = true;
             argumentList.add(name);
         }
-
-        if(author != null) {
+        if(!author.equals("")) {
             author = "%" + author + "%";
             if(argumentExist)
-                whereSql.append(" AND ");
-            whereSql.append("author LIKE ?");
+                sql +=" AND ";
+            sql += "b.author LIKE ?";
             argumentExist = true;
             argumentList.add(author);
         }
-
-        if(language != null) {
+        if(!language.equals("")) {
             language = "%" + language + "%";
             if(argumentExist)
-                whereSql.append(" AND ");
-            whereSql.append("language LIKE ?");
+                sql +=" AND ";
+            sql += "b.language LIKE ?";
+            argumentExist = true;
             argumentList.add(language);
         }
+        if(minPrice != 0) {
+            if(argumentExist)
+                sql +=" AND ";
+            sql += "b.price >= ?";
+            argumentExist = true;
+            argumentList.add(minPrice);
+        }
+        if(maxPrice != 0) {
+            if(argumentExist)
+                sql +=" AND ";
+            sql += "b.price <= ?";
+            argumentList.add(maxPrice);
+        }
 
-
-        if(argumentExist)
-            sql += whereSql.toString()+" ORDER BY name";
-        else
-            sql += " ORDER BY name";
-        System.out.println(sql);
-
-        return jdbcTemplate.query(sql, argumentList.toArray(), new BookRowMapper());
+        return jdbcTemplate.query(sql, argumentList.toArray(),new BookRowMapper());
     }
 
     @Override
