@@ -95,7 +95,6 @@ public class UserController {
         response.sendRedirect(bURL);
     }
 
-
     @PostMapping(value = "/Login")
     public ModelAndView postLogin(@RequestParam(required = false) String username, @RequestParam(required = false) String password,
                           HttpSession session, HttpServletResponse response) throws IOException {
@@ -112,7 +111,7 @@ public class UserController {
             System.out.println("Ulogovan je : " + loggedUser.getUserName());
             session.setAttribute(UserController.USER_KEY, loggedUser);
 
-            response.sendRedirect(bURL + "Korisnici");
+            response.sendRedirect(bURL + "Knjige");
             return null;
         } catch (Exception ex) {
             // ispis greške
@@ -137,4 +136,5 @@ public class UserController {
 
         response.sendRedirect(bURL);
     }
+
 }
