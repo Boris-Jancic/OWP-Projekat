@@ -10,7 +10,7 @@ public interface BookService {
 
     List<Book> findAll();
 
-    List<Book> find(String name, String author, String language);
+    List<Book> find(String name, float minPrice, float maxPrice, String author, String language);
 
     void save(Book user);
 
