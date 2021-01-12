@@ -16,39 +16,41 @@
     <p th:text="${'Tip korisnika: ' + user.userType}"></p>
     <a href="../Korisnici/Logout">Odjavi se</a><br>
 
+    <div class="create-container">
+        <h3>Izmena knjige</h3>
+        <form method="post" action="Izmeni">
+            <table class="forma">
+                <tr><th>Naziv knjige: </th><td><input type="text" th:value="${book.name}" name="name"/></td></tr>
+                <tr><th>ISBN(13 cifara): </th><td><input type="text" th:value="${book.isbn}" name="isbn"/></td></tr>
+                <tr><th>Izdavacka kuca: </th><td><input type="text" th:value="${book.publisher}" name="publisher"/></td></tr>
+                <tr><th>Autor(i): </th><td><input type="text" th:value="${book.authors}" name="authors"/></td></tr>
+                <tr><th>Datum izdavanja:</th><td><input type="date" th:value="${book.yearOfRelease}" name="released"/></td></tr>
+                <tr><th>Opis:</th><td><input type="textbox" th:value="${book.description}" name="description"/></td></tr>
+                <tr><th>URL do slike:</th><td><input type="text" th:value="${book.picture}" name="picture"/></td></tr>
+                <tr><th>Broj strana:</th><td><input type="number" th:value="${book.numOfPages}" name="pages"/></td></tr>
 
-    <form method="post" action="Izmeni">
-        <table class="forma">
-            <tr><th>Naziv knjige: </th><td><input type="text" th:value="${book.name}" name="name"/></td></tr>
-            <tr><th>ISBN(13 cifara): </th><td><input type="text" th:value="${book.isbn}" name="isbn"/></td></tr>
-            <tr><th>Izdavacka kuca: </th><td><input type="text" th:value="${book.publisher}" name="publisher"/></td></tr>
-            <tr><th>Autor(i): </th><td><input type="text" th:value="${book.authors}" name="authors"/></td></tr>
-            <tr><th>Datum izdavanja:</th><td><input type="date" th:value="${book.yearOfRelease}" name="released"/></td></tr>
-            <tr><th>Opis:</th><td><input type="textbox" th:value="${book.description}" name="description"/></td></tr>
-            <tr><th>URL do slike:</th><td><input type="text" th:value="${book.picture}" name="picture"/></td></tr>
-            <tr><th>Broj strana:</th><td><input type="number" th:value="${book.numOfPages}" name="pages"/></td></tr>
+                <tr><th> Tip proizvoda </th>
+                    <td scope="row">
+                        <select name="coverType">
+                            <option value="HARD" th:selected="${book.typeOfCover.toString()}">HARD</option>
+                            <option value="SOFT" th:selected="${book.typeOfCover.toString()}">SOFT</option>
+                        </select>
+                </tr></td>"
+                <tr><th> Pismo </th>
+                    <td scope="row">
+                        <select name="letterType">
+                            <option value="LATIN" th:selected="${book.letter.toString()}">LATIN</option>
+                            <option value="CYRILIC" th:selected="${book.letter.toString()}">CYRILIC</option>
+                        </select>
+                </tr></td>
 
-            <tr><th> Tip proizvoda </th>
-                <td scope="row">
-                    <select name="coverType">
-                        <option value="HARD" th:selected="${book.typeOfCover.toString()}">HARD</option>
-                        <option value="SOFT" th:selected="${book.typeOfCover.toString()}">SOFT</option>
-                    </select>
-            </tr></td>"
-            <tr><th> Pismo </th>
-                <td scope="row">
-                    <select name="letterType">
-                        <option value="LATIN" th:selected="${book.letter.toString()}">LATIN</option>
-                        <option value="CYRILIC" th:selected="${book.letter.toString()}">CYRILIC</option>
-                    </select>
-            </tr></td>
-
-            <tr><th>Jezik:</th><td><input type="text" th:value="${book.language}" name="language"/></td></tr>
-            <tr><th>Cena:</th><td><input type="number" th:value="${book.price}" name="price"/></td></tr>
-            <tr><th>Dostupnost:</th><td><input type="number" th:value="${book.remaining}" name="remaining"/></td></tr>
-            <tr><th></th><td><input type="submit" value="Izmeni"/></td></tr>
-        </table>
-    </form>
+                <tr><th>Jezik:</th><td><input type="text" th:value="${book.language}" name="language"/></td></tr>
+                <tr><th>Cena:</th><td><input type="number" th:value="${book.price}" name="price"/></td></tr>
+                <tr><th>Dostupnost:</th><td><input type="number" th:value="${book.remaining}" name="remaining"/></td></tr>
+                <tr><th></th><td><input type="submit" value="Izmeni"/></td></tr>
+            </table>
+        </form>
+    </div>
 
 </div>
 </body>

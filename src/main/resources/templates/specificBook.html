@@ -10,15 +10,14 @@
         <link rel="stylesheet" href="../css/style.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        <h2>Pregled knjige</h2>
+        <h2>Pregled posebne knjige</h2>
 
-        <a href="../Korisnici/Logout">Odjavi se</a><br>
-        <a href="../Korisnici">Glavni meni</a><br>
-        <a href="../Knjige">Pregled knjiga</a><br>
-        <p th:text="${'Ulogovan je: ' + user.userName}"></p>
-        <p th:text="${'Tip korisnika: ' + user.userType}"></p><br>
+        <a class="link-button" href="../Knjige">Nazad</a><br>
+        <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
+        <h5 th:text="${'Tip : ' + user.userType}"></h5>
+        <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
 
-        <div class="description-container">
+        <div class="create-container">
             <img class="book-cover-readMore" id="book-img" th:src="${book.picture}">
             <p id="name" th:text="${'Ime knjige: ' + book.name}"></p>
             <p id="isbn" th:text="${'ISBN: ' + book.isbn}"></p>
@@ -36,7 +35,7 @@
             <form method="get" action="Izmeni">
                 <input type="hidden" name="isbn" th:value="${book.isbn}">
                 <br>
-                <input type="submit" class="btnSubmit fadeIn fourth" value="Izmeni knjigu">
+                <input type="submit" th:if="${user.isAdmin()}" class="btnSubmit fadeIn fourth" value="Izmeni knjigu">
             </form>
         </div>
 
