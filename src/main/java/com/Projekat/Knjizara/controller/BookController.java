@@ -187,4 +187,26 @@ public class BookController {
         response.sendRedirect(bURL + "Knjige");
     }
 
+    @GetMapping(value = "/Pretraga")
+    public ModelAndView create(@RequestParam(required = false) String name, @RequestParam(required = false) String genre,
+                               @RequestParam(required = false) float minPrice, @RequestParam(required = false) float maxPrice,
+                               @RequestParam(required = false) String author, @RequestParam(required = false) String language,
+                               HttpServletResponse response, HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<Book> books = bookService.find(name, minPrice, maxPrice, author, language); //TODO : Dodaj zanr
+
+        ModelAndView result = new ModelAndView("searchPage");
+
+        result.addObject("books", books);
+        result.addObject("user", loggedUser);
+
+        return result;
+    }
 }
