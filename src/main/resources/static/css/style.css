@@ -1,8 +1,6 @@
 body {
-    background-color: #456268;
-    color: #fcf8ec;
+    background-color: darkcyan !important;
 }
-
 
 a {
     text-decoration: none;
@@ -35,7 +33,7 @@ a {
 }
 
 .login-form-1{
-    padding: 5%;
+    padding: 5% 0 5% 40%;
 }
 
 .btnSubmit
@@ -54,6 +52,15 @@ a {
     background-color: #0062cc;
 }
 
+.title {
+    font-size: 3rem;
+}
+
+.searchTable{
+    padding-left: 14%;
+    padding-right: 14%;
+}
+
 .book-img {
     height: 300px;
     max-height: 300px;
@@ -65,13 +72,16 @@ a {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 80%;
-    margin-left: 9%;
+    max-width: 90%;
+    margin-left: 14%;
 }
 
 .book-cover {
-    height: 400px;
-    max-height: 400px;
+    height: 350px;
+    max-height: 350px;
+    margin-top: 13%;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 
@@ -79,7 +89,7 @@ a {
     text-align: center;
     justify-content: center;
     flex-direction: column;
-    margin-top: 20px;
+    margin: 20px 20px 20px 20px;
 }
 
 .card-text {
@@ -89,10 +99,32 @@ a {
 }
 
 .book-cover-readMore {
-    width: 330px;
+    height: 300px;
     margin: 0px 30px 30px;
 }
 
-.read-more-container {
+.description-container {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.link-button {
+    background-color: oldlace;
+    border: none;
+    color: midnightblue;
+    padding: 5px 34px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 20px 2px;
+    cursor: pointer;
+}
+
+.create-container{
+    margin: 5% 15% 5% 15%;
+    padding: 5% 27%;
+    background-color: #79a3b1;
     align-items: center;
 }
