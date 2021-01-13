@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class BoughtBook {
+    private String id;
+    private String username;
     private Book book;
-    private int numberOfCopies;
+    private int numOfCopies;
     private float price; // generise aplikacija (book.price * numberOfCopies)
 }
