@@ -15,7 +15,7 @@
         <a class="link-button" href="../Knjige">Nazad</a><br>
         <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
         <h5 th:text="${'Tip : ' + user.userType}"></h5>
-        <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
+        <a class="link-button" href="../Korisnici/Logout">Odjavi se</a>
 
         <div class="create-container">
             <img class="book-cover-readMore" id="book-img" th:src="${book.picture}">
@@ -32,10 +32,27 @@
             <p id="rating" th:text="${'Ocena: ' + book.rating}"></p>
             <h6 class="price" id="bookPrice" th:text="${'Cena: ' + book.price}"></h6>
 
-            <form method="get" action="Izmeni">
+            <form method="get" action="Izmeni" th:if="${user.isAdmin()}">
                 <input type="hidden" name="isbn" th:value="${book.isbn}">
                 <br>
                 <input type="submit" th:if="${user.isAdmin()}" class="btnSubmit fadeIn fourth" value="Izmeni knjigu">
+            </form>
+
+            <form method="get" action="Naruci" th:if="${user.isAdmin()}">
+                <br>
+                <input type="hidden" name="isbn" th:value="${book.isbn}">
+                    <p>Broj primeraka :<input type="number" name="wantedCopies" value="0">
+                    <input type="submit" class="btnSubmit fadeIn fourth" value="Naruci dodatne primerke">
+                </p>
+            </form>
+
+            <form method="get" action="DodajUKorpu" th:if="!${user.isAdmin()}">
+                <br>
+                <input type="hidden" name="isbn" th:value="${book.isbn}">
+                <p>
+                    Broj primeraka :<input type="number" name="wantedCopies" value="0">
+                    <input type="submit" class="btnSubmit fadeIn fourth" value="Dodaj u korpu">
+                </p>
             </form>
         </div>
 
