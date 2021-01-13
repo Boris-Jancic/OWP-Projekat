@@ -24,11 +24,18 @@
                         <a class="nav-link" th:if="${user.isAdmin()}" href="Knjige/Dodaj">Dodaj knjigu</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Knjige/Korpa">Korpa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Knjige/Dodaj">Lista zelja</a>
+                    </li>
+                    <li class="nav-item">
                     </li>
 
                 </ul>
             </div>
         </nav>
+
         <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
         <h5 th:text="${'Tip : ' + user.userType}"></h5>
         <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
@@ -67,7 +74,7 @@
             <div class="row">
 
                 <div th:each="itBook, status: ${books}">
-                    <div class="card" style="width: 18rem;">
+                    <div class="card">
                         <img class="book-cover" th:src="${itBook.picture}">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${itBook.name}"></h5>
