@@ -73,7 +73,7 @@ a {
     flex-wrap: wrap;
     justify-content: center;
     max-width: 90%;
-    margin-left: 14%;
+    margin-left: 4%;
 }
 
 .book-cover {
@@ -86,10 +86,12 @@ a {
 
 
 .card {
+    width: 350px;
+    max-width: 350px;
     text-align: center;
     justify-content: center;
     flex-direction: column;
-    margin: 20px 20px 20px 20px;
+    margin: 20px 20px 20px 100px;
 }
 
 .card-text {
@@ -101,6 +103,11 @@ a {
 .book-cover-readMore {
     height: 300px;
     margin: 0px 30px 30px;
+}
+
+.book-cover-cart {
+    margin-left:40px;
+    max-height: 200px
 }
 
 .description-container {
