@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+
+</head>
+<body>
+<div th:fragment="centralDiv">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="title navbar-brand" href="#">Knjigerino</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Korisnici</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="Knjige/Dodaj">Dodaj knjigu</a>
+                </li>
+                <li class="nav-item">
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <a class="link-button" href="../Knjige">Pregled svih knjiga</a><br>
+    <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
+    <h5 th:text="${'Tip : ' + user.userType}"></h5>
+    <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
+
+    <form action="Knjige/Kupi">
+        <div class="container">
+            <table class="table table-sm table-dark">
+                <thead>
+                <tr>
+                    <th>Slika</th>
+                    <th>Naziv knjige</th>
+                    <th>Autor</th>
+                    <th>Kolicina primeraka</th>
+                    <th class="float-right">Cena</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <div th:each="cartBook, status: ${session.shoppingCart}">
+                        </td>
+                            <td><img class="book-cover-cart" th:src="${cartBook.book.picture}" style=";"></td>
+                            <td th:text="${cartBook.book.name}"></td>
+                            <td th:text="${cartBook.book.authors}"></td>
+                            <td th:text="${cartBook.numOfCopies}"></td>
+                            <td class="float-right" th:text="${cartBook.price}"></td>
+                            <td></td>
+                        </tr>
+                    </div>
+                </tbody>
+
+                </th>
+                    <th colspan="3"></th>
+                    <th><input style="width: 100%;" type="submit" value="Kupi"/></th>
+                    <th class="float-right"  th:text="${'Ukupna cena: ' + finalPrice}"></th>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+    <section class="flex-container">
+    </section>
+
+</div>
+
+</body>
+</html>
