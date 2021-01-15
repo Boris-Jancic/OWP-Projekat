@@ -11,4 +11,5 @@ public class BoughtBook {
     private Book book;
     private int numOfCopies;
     private float price; // generise aplikacija (book.price * numberOfCopies)
+    private String receiptID;
 }
