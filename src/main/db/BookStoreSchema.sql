@@ -29,27 +29,21 @@ CREATE TABLE genres
 	description VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE boughtBook
+CREATE TABLE boughtBooks
 (	
-	name VARCHAR(30) NOT NULL,
 	id VARCHAR(10) NOT NULL PRIMARY KEY,
-	book VARCHAR(10) NOT NULL,
-    price FLOAT NOT NULL
-);
-
-CREATE TABLE boughtBookReceipt
-(	
-	idBook VARCHAR(10) NOT NULL,
+    username VARCHAR(30) NOT NULL,
+	book VARCHAR(13) NOT NULL,
+    numOfCopies INT NOT NULL,
+    price FLOAT NOT NULL,
 	idReceipt VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE receipt
+CREATE TABLE receipts
 (	
-	name VARCHAR(30) NOT NULL,
 	id VARCHAR(10) NOT NULL PRIMARY KEY,
-	book VARCHAR(13) NOT NULL,
-    user VARCHAR(30) NOT NULL,
-    dateOfPurchase DATE NOT NULL,
+    dateOfPurchase VARCHAR(15) NOT NULL,
+	name VARCHAR(30) NOT NULL,
     numOfBooks INT NOT NULL,
     price FLOAT NOT NULL
 );
