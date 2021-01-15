@@ -9,9 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Receipt {
+    private String id;
     private List<BoughtBook> boughtBooks;
     private float finalPrice;
-    private LocalDateTime dateOfPurchase;
+    private String dateOfPurchase;
     private User client;
     private int numberOfBooksBought;
 }
