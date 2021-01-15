@@ -10,9 +10,34 @@
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="title navbar-brand" href="#">Knjigerino</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj">Dodaj knjigu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="Korpa">Korpa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine">Istorija kupovina</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="#">Lista zelja</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <h1>Knjige</h1>
     <a href="Logout">Odjavi se</a><br>
-    <a href="../Korisnici">Glavni meni</a><br>
     <p th:text="${'Ulogovan je: ' + user.userName}"></p>
     <p th:text="${'Tip korisnika: ' + user.userType}"></p><br>
     <a href="../Knjige">Pregled svih knjiga</a><br>
