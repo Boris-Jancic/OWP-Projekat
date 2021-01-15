@@ -91,7 +91,7 @@ a {
     text-align: center;
     justify-content: center;
     flex-direction: column;
-    margin: 20px 20px 20px 100px;
+    margin: 20px 20px 20px 20px;
 }
 
 .card-text {
@@ -134,4 +134,9 @@ a {
     padding: 5% 27%;
     background-color: #79a3b1;
     align-items: center;
+}
+
+.cart-item-text {
+    vertical-align: middle !important;
+    font-size: 1.5vw;
 }
