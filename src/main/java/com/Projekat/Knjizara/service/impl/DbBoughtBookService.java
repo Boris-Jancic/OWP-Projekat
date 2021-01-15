@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Random;
 
+import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
+
 @Service
 public class DbBoughtBookService implements BoughtBookService {
 
@@ -17,15 +19,13 @@ public class DbBoughtBookService implements BoughtBookService {
     private BoughtBookDao boughtBookDao;
 
     @Override
-    public String generateRandID() {
-        Random r = new Random();
-        int randomID = r.nextInt(999999);
-        return Integer.toString(randomID);
+    public BoughtBook findOne(String id) {
+        return boughtBookDao.findOne(id);
     }
 
     @Override
-    public BoughtBook findOne(String id) {
-        return boughtBookDao.findOne(id);
+    public List<BoughtBook> findBoughtBooksOnReceipt(String id) {
+        return boughtBookDao.findBoughtBooksOnReceipt(id);
     }
 
     @Override
