@@ -2,14 +2,14 @@ package com.Projekat.Knjizara.controller;
 
 import com.Projekat.Knjizara.models.Book;
 import com.Projekat.Knjizara.models.BoughtBook;
+import com.Projekat.Knjizara.models.Receipt;
 import com.Projekat.Knjizara.models.User;
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
 import com.Projekat.Knjizara.models.enums.EType;
 import com.Projekat.Knjizara.service.BookService;
 import com.Projekat.Knjizara.service.BoughtBookService;
-import com.Projekat.Knjizara.service.UserService;
-import com.fasterxml.jackson.databind.BeanProperty;
+import com.Projekat.Knjizara.service.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 
 @Controller
 @RequestMapping(value = "/Knjige")
@@ -37,6 +41,9 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+
+    @Autowired
+    private ReceiptService receiptService;
 
     @Autowired
     private BoughtBookService boughtBookService;
@@ -66,11 +73,11 @@ public class BookController {
 
         List<Book> books = bookService.findAll();
 
-        ModelAndView rezultat = new ModelAndView("bookPage");
-        rezultat.addObject("books", books);
-        rezultat.addObject("user", user);
+        ModelAndView result = new ModelAndView("bookPage");
+        result.addObject("books", books);
+        result.addObject("user", user);
 
-        return rezultat;
+        return result;
     }
 
 
@@ -199,7 +206,7 @@ public class BookController {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
-        if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
+        if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
         }
@@ -259,7 +266,7 @@ public class BookController {
         return result;
     }
 
-        @GetMapping(value = "/DodajUKorpu")
+    @GetMapping(value = "/DodajUKorpu")
     public ModelAndView addToCart(@RequestParam String isbn, int wantedCopies,
                      HttpServletResponse response, HttpSession session) throws IOException {
 
@@ -278,14 +285,11 @@ public class BookController {
         Book wantedBook = bookService.findOne(isbn);
         BoughtBook boughtBook = new BoughtBook();
 
-        boughtBook.setId(boughtBookService.generateRandID());
+        boughtBook.setId(randomAlphanumeric(9));
         boughtBook.setUsername(loggedUser.getUserName());
         boughtBook.setBook(wantedBook);
         boughtBook.setNumOfCopies(wantedCopies);
         boughtBook.setPrice(wantedCopies * wantedBook.getPrice());
-
-        wantedBook.setRemaining(wantedBook.getRemaining() - wantedCopies);
-        bookService.update(wantedBook);
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
         boughtBooks.add(boughtBook);
@@ -301,4 +305,110 @@ public class BookController {
         result.addObject("finalPrice", finalPrice);
         return result;
     }
+
+    @PostMapping (value = "/IzbaciIzKorpe")
+    public void removeFromCart(@RequestParam String id,
+                               HttpServletResponse response, HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
+
+        boughtBooks.removeIf(removedBook -> removedBook.getId().equals(id));
+
+        response.sendRedirect(bURL + "Knjige/Korpa");
+    }
+
+    @GetMapping(value = "/TabelaKnjiga")
+    public ModelAndView bookTable(HttpServletResponse response, HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<Book> books = bookService.findAll();
+
+        ModelAndView result = new ModelAndView("bookTable");
+        result.addObject("books", books);
+        result.addObject("user", loggedUser);
+
+        return result;
+    }
+
+    @GetMapping(value = "/IstorijaKupovine")
+    public ModelAndView history(HttpServletResponse response, HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<Receipt> receipts = receiptService.findByUser(loggedUser.getUserName());
+
+        for (Receipt r : receipts){
+            System.out.println(r);
+        }
+        ModelAndView result = new ModelAndView("receiptPage");
+        result.addObject("user", loggedUser);
+        result.addObject("receipts", receipts);
+        return result;
+    }
+
+    @PostMapping(value = "/Kupi")
+    public void buy(HttpServletResponse response, HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        String receiptID = randomAlphanumeric(9);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String dateOfRegistration = dtf.format(now);
+
+        ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
+        Receipt receipt = new Receipt();
+
+        float finalPrice = 0;
+        int numOfCopies = 0;
+
+        receipt.setBoughtBooks(boughtBooks);
+
+        for (BoughtBook bB : boughtBooks) {
+            bB.getBook().setRemaining(bB.getBook().getRemaining() - bB.getNumOfCopies());
+            bB.setReceiptID(receiptID);
+            bookService.update(bB.getBook());
+            boughtBookService.save(bB);
+
+            numOfCopies += bB.getNumOfCopies();
+            finalPrice += bB.getPrice();
+        }
+        boughtBooks.clear();
+
+
+        receipt.setId(receiptID);
+        receipt.setClient(loggedUser);
+        receipt.setDateOfPurchase(dateOfRegistration);
+        receipt.setNumberOfBooksBought(numOfCopies);
+        receipt.setFinalPrice(finalPrice);
+
+
+        receiptService.save(receipt);
+
+        response.sendRedirect(bURL + "Knjige/IstorijaKupovine");
+    }
+
 }
