@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -34,6 +35,7 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
             Book book = bookService.findOne(rs.getString(index++));
             int numOfCopies = rs.getInt(index++);
             float price = rs.getFloat(index++);
+            String receiptID = rs.getString(index++);
 
             BoughtBook boughtBook = new BoughtBook();
 
@@ -42,6 +44,7 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
             boughtBook.setBook(book);
             boughtBook.setNumOfCopies(numOfCopies);
             boughtBook.setPrice(price);
+            boughtBook.setId(receiptID);
 
             return boughtBook;
         }
@@ -58,6 +61,14 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
     }
 
     @Override
+    public List<BoughtBook> findBoughtBooksOnReceipt(String id) {
+        String sql = "SELECT * FROM boughtbooks " +
+                        "WHERE idReceipt = ?" +
+                        "GROUP BY id, username, book, numOfCopies, price, idReceipt";
+        return jdbcTemplate.query(sql, new BoughtBookRowMapper(), id);
+    }
+
+    @Override
     public List<BoughtBook> findAll() {
         String sql = "SELECT * FROM boughtBooks";
         return jdbcTemplate.query(sql, new BoughtBookRowMapper());
@@ -65,10 +76,10 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
 
     @Override
     public void save(BoughtBook boughtBook) {
-        String sql = "INSERT INTO boughtBooks (id, user, book, numOfCopies, price) " +
-                "  VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO boughtBooks (id, username, book, numOfCopies, price, idReceipt) " +
+                "  VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, boughtBook.getId(), boughtBook.getUsername(), boughtBook.getBook().getIsbn(),
-                boughtBook.getNumOfCopies(), boughtBook.getPrice());
+                boughtBook.getNumOfCopies(), boughtBook.getPrice(), boughtBook.getReceiptID());
     }
 
     @Override

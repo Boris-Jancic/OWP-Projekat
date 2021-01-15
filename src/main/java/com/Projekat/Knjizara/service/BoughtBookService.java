@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface BoughtBookService {
 
-    public String generateRandID();
-
     public BoughtBook findOne(String id);
+
+    public List<BoughtBook> findBoughtBooksOnReceipt(String id);
 
     public List<BoughtBook> findAll();
 
