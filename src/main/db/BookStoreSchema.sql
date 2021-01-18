@@ -42,7 +42,7 @@ CREATE TABLE boughtBooks
 CREATE TABLE receipts
 (	
 	id VARCHAR(10) NOT NULL PRIMARY KEY,
-    dateOfPurchase VARCHAR(15) NOT NULL,
+    dateOfPurchase VARCHAR(30) NOT NULL,
 	name VARCHAR(30) NOT NULL,
     numOfBooks INT NOT NULL,
     price FLOAT NOT NULL
