@@ -131,7 +131,9 @@ a {
 
 .create-container{
     margin: 5% 15% 5% 15%;
-    padding: 5% 27%;
+    padding-top: 5%;
+    padding-left: 25%;
+    padding-bottom: 5%;
     background-color: #79a3b1;
     align-items: center;
 }
@@ -139,4 +141,8 @@ a {
 .cart-item-text {
     vertical-align: middle !important;
     font-size: 1.5vw;
+}
+
+.table thead tr th {
+    cursor: pointer;
 }
