@@ -10,7 +10,7 @@ public interface BookDao {
 
     public List<Book> findAll();
 
-    public List<Book> find(String name, float minPrice, float maxPrice, String author, String language);
+    public List<Book> find(String isbn, String name, float minPrice, float maxPrice, String author, String language);
 
     public void save(Book book);
 

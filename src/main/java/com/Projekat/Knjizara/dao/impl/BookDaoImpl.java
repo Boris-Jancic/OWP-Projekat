@@ -4,16 +4,20 @@ import com.Projekat.Knjizara.dao.BookDao;
 import com.Projekat.Knjizara.models.Book;
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -21,6 +25,9 @@ public class BookDaoImpl implements BookDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private class BookRowMapper implements RowMapper<Book> {
 
@@ -30,7 +37,7 @@ public class BookDaoImpl implements BookDao {
             String name = rs.getString(index++);
             String isbn = rs.getString(index++);
             String publisher = rs.getString(index++);
-            String authors = rs.getString(index++);
+            String author = rs.getString(index++);
             Date released = rs.getDate(index++);
             String description = rs.getString(index++);
             String picture = rs.getString(index++);
@@ -48,7 +55,7 @@ public class BookDaoImpl implements BookDao {
             book.setName(name);
             book.setIsbn(isbn);
             book.setPublisher(publisher);
-            book.setAuthors(authors);
+            book.setAuthor(author);
             book.setYearOfRelease(released);
             book.setDescription(description);
             book.setPicture(picture);
@@ -81,58 +88,73 @@ public class BookDaoImpl implements BookDao {
         return jdbcTemplate.query(sql, new BookRowMapper());
     }
 
-    @Override
-    public List<Book> find(String name, float minPrice, float maxPrice, String author, String language) {// TODO: dodaj pretragu po zanru
-        ArrayList<Object> argumentList = new ArrayList<Object>();
+//    @Override
+//    public List<Book> findAll() {
+//        String sql = "SELECT * FROM books";
+//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class));
+//    }
 
+    @Override
+    public List<Book> find(String isbn, String name, float minPrice, float maxPrice, String author, String language) {// TODO: dodaj pretragu po zanru
+        val map = new MapSqlParameterSource();
+
+        //language=MySQL
         String sql = "SELECT * FROM books b WHERE ";
 
         boolean argumentExist = false;
 
+        if(!isbn.equals("")) {
+            isbn = "%" + isbn + "%";
+            sql += "b.isbn LIKE :isbn";
+            argumentExist = true;
+            map.addValue("isbn", isbn);
+        }
         if(!name.equals("")) {
             name = "%" + name + "%";
-            sql += "b.name LIKE ?";
+            sql += "b.name LIKE :name";
+            if(argumentExist)
+                sql +=" AND ";
             argumentExist = true;
-            argumentList.add(name);
+            map.addValue("name", name);
         }
         if(!author.equals("")) {
             author = "%" + author + "%";
             if(argumentExist)
                 sql +=" AND ";
-            sql += "b.author LIKE ?";
+            sql += "b.author LIKE :author";
             argumentExist = true;
-            argumentList.add(author);
+            map.addValue("author", author);
         }
         if(!language.equals("")) {
             language = "%" + language + "%";
             if(argumentExist)
                 sql +=" AND ";
-            sql += "b.language LIKE ?";
+            sql += "b.language LIKE :language";
             argumentExist = true;
-            argumentList.add(language);
+            map.addValue("language", language);
         }
         if(minPrice != 0) {
             if(argumentExist)
                 sql +=" AND ";
-            sql += "b.price >= ?";
+            sql += "b.price >= :minprice";
             argumentExist = true;
-            argumentList.add(minPrice);
+            map.addValue("minprice", minPrice);
         }
         if(maxPrice != 0) {
             if(argumentExist)
                 sql +=" AND ";
-            sql += "b.price <= ?";
-            argumentList.add(maxPrice);
+            sql += "b.price <= :maxprice";
+            map.addValue("maxprice", maxPrice);
         }
 
-        return jdbcTemplate.query(sql, argumentList.toArray(),new BookRowMapper());
+        return namedParameterJdbcTemplate.query(sql, map, new BookRowMapper());
     }
 
     @Override
     public void save(Book book) {
         String sql = "INSERT INTO books (name, isbn, publisher, author, released, description, picture, pages, cover, letter, language, price, remaining, rating, active) " +
                      "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthors(), book.getYearOfRelease(),
+        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthor(), book.getYearOfRelease(),
                     book.getDescription(), book.getPicture(), book.getNumOfPages(), book.getTypeOfCover().toString(),
                     book.getLetter().toString(), book.getLanguage(), book.getPrice(), book.getRemaining(), book.getRating(),
                     book.isActive());
@@ -144,7 +166,7 @@ public class BookDaoImpl implements BookDao {
                      "                  picture = ?, pages = ?, cover = ?, letter = ?, language = ?, price = ?," +
                      "                  remaining = ?, rating = ?, active = ?" +
                      "      WHERE isbn like ?";
-        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthors(),
+        jdbcTemplate.update(sql, book.getName(), book.getIsbn(), book.getPublisher(), book.getAuthor(),
                     book.getYearOfRelease(), book.getDescription(), book.getPicture(), book.getNumOfPages(),
                     book.getTypeOfCover().toString(), book.getLetter().toString(), book.getLanguage(), book.getPrice(),
                     book.getRemaining(), book.getRating(), book.isActive(), book.getIsbn());
