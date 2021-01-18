@@ -37,10 +37,10 @@
     </nav>
 
     <h1>Knjige</h1>
-    <a href="Logout">Odjavi se</a><br>
+    <a class="link-button" href="Logout">Odjavi se</a><br>
     <p th:text="${'Ulogovan je: ' + user.userName}"></p>
     <p th:text="${'Tip korisnika: ' + user.userType}"></p><br>
-    <a href="../Knjige">Pregled svih knjiga</a><br>
+    <a class="link-button" href="../Knjige">Pregled svih knjiga</a><br>
 
     <section class="flex-container">
         <div class="row">
@@ -50,7 +50,7 @@
                     <img class="book-cover" th:src="${itBook.picture}">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${itBook.name}"></h5>
-                        <p class="card-text" th:text="${'Autor: ' + itBook.authors}"></p>
+                        <p class="card-text" th:text="${'Autor: ' + itBook.getAuthor}"></p>
                         <p class="card-text" th:text="${'Prosecna ocena: ' + itBook.rating}"></p>
                         <h6 th:text="${'Cena: ' + itBook.price}"></h6>
 
