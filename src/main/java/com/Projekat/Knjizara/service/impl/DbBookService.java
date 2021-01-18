@@ -26,8 +26,8 @@ public class DbBookService implements BookService {
     }
 
     @Override
-    public List<Book> find(String name, float minPrice, float maxPrice, String author, String language) {
-        return bookDao.find(name, minPrice, maxPrice, author, language);
+    public List<Book> find(String isbn, String name, float minPrice, float maxPrice, String author, String language) {
+        return bookDao.find(isbn, name, minPrice, maxPrice, author, language);
     }
 
     @Override
