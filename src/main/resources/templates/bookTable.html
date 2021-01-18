@@ -59,7 +59,7 @@
                     <div th:each="itBook, status: ${books}">
                         <tr>
                             <td class="cart-item-text" th:text="${itBook.name}"></td>
-                            <td class="cart-item-text" th:text="${itBook.authors}"></td>
+                            <td class="cart-item-text" th:text="${itBook.getAuthor}"></td>
                             <td class="cart-item-text" th:text="${itBook.rating}"></td>
                             <td class="cart-item-text" th:if="${user.isAdmin()}" th:text="${itBook.remaining}"></td>
                             <td class="cart-item-text" th:text="${itBook.price}"></td>

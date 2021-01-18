@@ -58,7 +58,7 @@
                     </td>
                         <td><img class="book-cover-cart" th:src="${cartBook.book.picture}" style=";"></td>
                         <td class="cart-item-text" th:text="${cartBook.book.name}"></td>
-                        <td class="cart-item-text" th:text="${cartBook.book.authors}"></td>
+                        <td class="cart-item-text" th:text="${cartBook.book.getAuthor}"></td>
                         <td class="cart-item-text" th:text="${cartBook.numOfCopies}"></td>
                         <td class="cart-item-text" th:text="${cartBook.price}"></td>
                         <td class="float-right">

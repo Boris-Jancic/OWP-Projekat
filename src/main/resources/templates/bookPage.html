@@ -45,6 +45,7 @@
                 <table class="table table-sm table-dark searchTable">
                     <thead>
                         <tr>
+                            <th>ISBN</th>
                             <th>Naziv knjige</th>
                             <th>Autor(i)</th>
                             <th>Jezik</th>
@@ -54,6 +55,7 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td><input type="search" name="isbn"/></td>
                             <td><input type="search" name="name"/></td>
                             <td><input type="search" name="author"/></td>
                             <td><input type="search" name="language"/></td>
@@ -78,7 +80,7 @@
                         <img class="book-cover" th:src="${itBook.picture}">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${itBook.name}"></h5>
-                            <p class="card-text" th:text="${'Autor: ' + itBook.authors}"></p>
+                            <p class="card-text" th:text="${'Autor: ' + itBook.author}"></p>
                             <p class="card-text" th:text="${'Prosecna ocena: ' + itBook.rating}"></p>
                             <p class="card-text" th:if="${user.isAdmin()}" th:text="${'Preostalo : ' + itBook.remaining}"></p>
                             <h6 th:text="${'Cena: ' + itBook.price}"></h6>
