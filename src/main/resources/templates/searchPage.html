@@ -50,7 +50,7 @@
                     <img class="book-cover" th:src="${itBook.picture}">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${itBook.name}"></h5>
-                        <p class="card-text" th:text="${'Autor: ' + itBook.getAuthor}"></p>
+                        <p class="card-text" th:text="${'Autor: ' + itBook.author}"></p>
                         <p class="card-text" th:text="${'Prosecna ocena: ' + itBook.rating}"></p>
                         <h6 th:text="${'Cena: ' + itBook.price}"></h6>
 
