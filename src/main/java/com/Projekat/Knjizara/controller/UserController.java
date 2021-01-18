@@ -1,13 +1,12 @@
 package com.Projekat.Knjizara.controller;
 
-import com.Projekat.Knjizara.models.Book;
 import com.Projekat.Knjizara.models.User;
-import com.Projekat.Knjizara.models.enums.ECover;
-import com.Projekat.Knjizara.models.enums.ELetter;
 import com.Projekat.Knjizara.models.enums.EType;
 import com.Projekat.Knjizara.service.UserService;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +17,10 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Controller
 @RequestMapping(value="/Korisnici")
@@ -54,7 +51,7 @@ public class UserController {
             return null;
         }
 
-        ModelAndView result = new ModelAndView("mainMenu");
+        ModelAndView result = new ModelAndView("Korisnici");
         result.addObject("user", loggedUser);
 
         return result;
@@ -62,37 +59,33 @@ public class UserController {
 
 
     @GetMapping(value = "/Registracija")
-    public ModelAndView create() throws IOException {
+    public ModelAndView create() {
         ModelAndView result = new ModelAndView("register");
         return result;
     }
 
+
     @PostMapping(value = "/Registracija")
-    public void create(@RequestParam String username, @RequestParam String password, @RequestParam String email,
-                       @RequestParam String name, @RequestParam String lastName, @RequestParam Date dateOfBirth,
-                       @RequestParam String address, @RequestParam String phone,
+    public ModelAndView create(@Valid User client, BindingResult bindingResult,
                        HttpServletResponse response, HttpSession session) throws IOException {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         String dateOfRegistration = dtf.format(now);
 
-        User user = new User();
+        client.setUserType(EType.CLIENT);
+        client.setActive(true);
+        client.setDateOfRegistration(dateOfRegistration);
 
-        user.setUserName(username);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setName(name);
-        user.setLastName(lastName);
-        user.setDateOfBirth(dateOfBirth);
-        user.setAddress(address);
-        user.setPhone(phone);
-        user.setUserType(EType.CLIENT);
-        user.setActive(true);
-        user.setDateOfRegistration(dateOfRegistration);
+        if (bindingResult.hasErrors()) {
+            ModelAndView error = new ModelAndView("register");
+            error.addObject("client", client);
+            return error;
+        }
 
-        userService.save(user);
+        userService.save(client);
         response.sendRedirect(bURL);
+        return null;
     }
 
     @PostMapping(value = "/Login")
@@ -116,7 +109,7 @@ public class UserController {
         } catch (Exception ex) {
             // ispis greške
             String message = ex.getMessage();
-            if (message == "") {
+            if (message.isEmpty()) {
                 message = "Neuspešna prijava!";
             }
 
