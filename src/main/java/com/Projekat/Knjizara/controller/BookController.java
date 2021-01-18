@@ -12,6 +12,7 @@ import com.Projekat.Knjizara.service.BoughtBookService;
 import com.Projekat.Knjizara.service.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,20 +24,22 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import static org.thymeleaf.util.StringUtils.isEmpty;
 import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 
 @Controller
 @RequestMapping(value = "/Knjige")
 public class BookController {
 
-    @Autowired
     public static final String SHOPPING_CART_KEY = "shoppingCart";
 
     @Autowired
@@ -50,6 +53,10 @@ public class BookController {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private HttpSession session;
+    
     private String bURL;
 
     public void setServletContext(ServletContext servletContext) {
@@ -62,7 +69,7 @@ public class BookController {
     }
 
     @GetMapping
-    public ModelAndView Index(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView Index(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         User user = (User) request.getSession().getAttribute(UserController.USER_KEY);
 
@@ -72,17 +79,27 @@ public class BookController {
         }
 
         List<Book> books = bookService.findAll();
-
         ModelAndView result = new ModelAndView("bookPage");
-        result.addObject("books", books);
-        result.addObject("user", user);
 
+        if (user.isAdmin()){
+            result.addObject("books", books);
+        } else {
+            List<Book> clientBooks = new ArrayList<>();
+
+            for (Book b : books) {
+                if (b.getRemaining() > 0 || b.isActive())
+                    clientBooks.add(b);
+            }
+            result.addObject("books", clientBooks);
+        }
+
+        result.addObject("user", user);
         return result;
     }
 
 
     @GetMapping(value = "/Detalji")
-    public ModelAndView details(@RequestParam String isbn, HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView details(@RequestParam String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -100,7 +117,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/Dodaj")
-    public ModelAndView create(HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView create(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -114,41 +131,49 @@ public class BookController {
         return result;
     }
 
+    private String getISBNString() {
+        String numChars = "1234567890";
+        StringBuilder stringBuilder = new StringBuilder();
+        Random rnd = new Random();
+        while (stringBuilder.length() < 13) {
+            int index = (int) (rnd.nextFloat() * numChars.length());
+            stringBuilder.append(numChars.charAt(index));
+        }
+        String saltStr = stringBuilder.toString();
+        return saltStr;
+    }
+
     @PostMapping(value = "/Dodaj")
-    public void create(@RequestParam String name, @RequestParam String isbn, @RequestParam String authors,
-                       @RequestParam String publisher, @RequestParam Date released, @RequestParam String description,
-                       @RequestParam String picture, @RequestParam int pages, @RequestParam String coverType,
-                       @RequestParam String language, @RequestParam float price, @RequestParam String letterType,
-                       HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView create(@Valid Book book, BindingResult bindingResult, String cover, String letter,
+                       HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
         if (loggedUser == null) {
             response.sendRedirect(bURL);
-            return;
+            return null;
         }
 
-        Book book = new Book();
+        book.setIsbn(getISBNString());
+        book.setTypeOfCover(ECover.valueOf(cover));
+        book.setLetter(ELetter.valueOf(letter));
+        book.setRemaining(0);
+        book.setActive(true);
 
-        book.setName(name);
-        book.setIsbn(isbn);
-        book.setPublisher(publisher);
-        book.setAuthors(authors);
-        book.setYearOfRelease(released);
-        book.setDescription(description);
-        book.setPicture(picture);
-        book.setNumOfPages(pages);
-        book.setTypeOfCover(ECover.valueOf(coverType));
-        book.setLetter(ELetter.valueOf(letterType));
-        book.setPrice(price);
-        book.setLanguage(language);
+        if (bindingResult.hasErrors()) {
+            ModelAndView error = new ModelAndView("addBook");
+            System.out.println(book);
+            error.addObject("user", loggedUser);
+            return error;
+        }
 
         bookService.save(book);
         response.sendRedirect(bURL + "Knjige");
+        return null;
     }
 
     @GetMapping(value = "/Izmeni")
-    public ModelAndView edit(@RequestParam String isbn, HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView edit(@RequestParam String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -166,43 +191,46 @@ public class BookController {
     }
 
     @PostMapping(value = "/Izmeni")
-    public void edit(@RequestParam String name, @RequestParam String isbn, @RequestParam String authors,
-                     @RequestParam String publisher, @RequestParam Date released, @RequestParam String description,
-                     @RequestParam String picture, @RequestParam int pages, @RequestParam String coverType,
-                     @RequestParam String language, @RequestParam float price, @RequestParam String letterType,
-                     HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView edit(@Valid Book book, BindingResult bindingResult, String cover, String letter, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
         if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
             response.sendRedirect(bURL);
-            return;
+            return null;
         }
 
-        Book book = new Book();
+        book.setName(book.getName());
+        book.setPublisher(book.getPublisher());
+        book.setAuthor(book.getAuthor());
+        book.setYearOfRelease(book.getYearOfRelease());
+        book.setDescription(book.getDescription());
+        book.setPicture(book.getPicture());
+        book.setNumOfPages(book.getNumOfPages());
+        book.setTypeOfCover(ECover.valueOf(cover));
+        book.setLetter(ELetter.valueOf(letter));
+        book.setPrice(book.getPrice());
+        book.setLanguage(book.getLanguage());
 
-        book.setName(name);
-        book.setIsbn(isbn);
-        book.setPublisher(publisher);
-        book.setAuthors(authors);
-        book.setYearOfRelease(released);
-        book.setDescription(description);
-        book.setPicture(picture);
-        book.setNumOfPages(pages);
-        book.setTypeOfCover(ECover.valueOf(coverType));
-        book.setLetter(ELetter.valueOf(letterType));
-        book.setPrice(price);
-        book.setLanguage(language);
+        if (bindingResult.hasErrors()) {
+            ModelAndView error = new ModelAndView("editBook");
+            System.out.println(book);
+            error.addObject("user", loggedUser);
+            error.addObject("book", book);
+            return error;
+        }
 
         bookService.update(book);
         response.sendRedirect(bURL + "Knjige");
+        return null;
     }
 
     @GetMapping(value = "/Pretraga")
-    public ModelAndView create(@RequestParam(required = false) String name, @RequestParam(required = false) String genre,
-                               @RequestParam(required = false) float minPrice, @RequestParam(required = false) float maxPrice,
-                               @RequestParam(required = false) String author, @RequestParam(required = false) String language,
-                               HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView create(@RequestParam(required = false) String isbn, @RequestParam(required = false) String name,
+                               @RequestParam(required = false) String genre, @RequestParam(required = false) float minPrice,
+                               @RequestParam(required = false) float maxPrice, @RequestParam(required = false) String author,
+                               @RequestParam(required = false) String language,
+                               HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -211,10 +239,13 @@ public class BookController {
             return null;
         }
 
-        List<Book> books = bookService.find(name, minPrice, maxPrice, author, language); //TODO : Dodaj zanr
+        ModelAndView result = new ModelAndView("searchPage");;
+        if (isEmpty(isbn) && isEmpty(name) &&  isEmpty(author) && minPrice == 0 && maxPrice == 0 && isEmpty(language)) {
+            result.addObject("books", bookService.findAll());
+        } else {
+            result.addObject("books", bookService.find(isbn, name, minPrice, maxPrice, author, language)); //TODO : Dodaj zanr
+        }
 
-        ModelAndView result = new ModelAndView("searchPage");
-        result.addObject("books", books);
         result.addObject("user", loggedUser);
 
         return result;
@@ -222,7 +253,7 @@ public class BookController {
 
     @GetMapping(value = "/Naruci")
     public void edit(@RequestParam String isbn, int wantedCopies,
-                     HttpServletResponse response, HttpSession session) throws IOException {
+                     HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -239,7 +270,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/Korpa")
-    public ModelAndView viewCart(HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView viewCart(HttpServletResponse response) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
         if (loggedUser == null) {
@@ -248,7 +279,7 @@ public class BookController {
         }
 
         if (session.getAttribute(SHOPPING_CART_KEY) == null) {
-            ArrayList<BoughtBook> createBoughtBooks = new ArrayList<BoughtBook>();
+            ArrayList<BoughtBook> createBoughtBooks = new ArrayList<>();
             session.setAttribute(SHOPPING_CART_KEY, createBoughtBooks);
         }
 
@@ -268,7 +299,7 @@ public class BookController {
 
     @GetMapping(value = "/DodajUKorpu")
     public ModelAndView addToCart(@RequestParam String isbn, int wantedCopies,
-                     HttpServletResponse response, HttpSession session) throws IOException {
+                     HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -308,7 +339,7 @@ public class BookController {
 
     @PostMapping (value = "/IzbaciIzKorpe")
     public void removeFromCart(@RequestParam String id,
-                               HttpServletResponse response, HttpSession session) throws IOException {
+                               HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -325,7 +356,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/TabelaKnjiga")
-    public ModelAndView bookTable(HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView bookTable(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -344,7 +375,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/IstorijaKupovine")
-    public ModelAndView history(HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView history(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -365,7 +396,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/Kupi")
-    public void buy(HttpServletResponse response, HttpSession session) throws IOException {
+    public void buy(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -375,20 +406,26 @@ public class BookController {
         }
 
         String receiptID = randomAlphanumeric(9);
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        String dateOfRegistration = dtf.format(now);
+        String dateOfPurchase = dtf.format(now);
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
-        Receipt receipt = new Receipt();
 
         float finalPrice = 0;
         int numOfCopies = 0;
 
-        receipt.setBoughtBooks(boughtBooks);
-
         for (BoughtBook bB : boughtBooks) {
-            bB.getBook().setRemaining(bB.getBook().getRemaining() - bB.getNumOfCopies());
+            int remainingBooks = bB.getBook().getRemaining() - bB.getNumOfCopies();
+
+            if (remainingBooks < 0) {
+                bB.getBook().setRemaining(0);
+                bB.setNumOfCopies(bB.getBook().getRemaining());
+            } else {
+                bB.getBook().setRemaining(remainingBooks);
+            }
+
             bB.setReceiptID(receiptID);
             bookService.update(bB.getBook());
             boughtBookService.save(bB);
@@ -396,15 +433,16 @@ public class BookController {
             numOfCopies += bB.getNumOfCopies();
             finalPrice += bB.getPrice();
         }
-        boughtBooks.clear();
 
-
+        Receipt receipt = new Receipt();
         receipt.setId(receiptID);
+        receipt.setBoughtBooks(boughtBooks);
         receipt.setClient(loggedUser);
-        receipt.setDateOfPurchase(dateOfRegistration);
+        receipt.setDateOfPurchase(dateOfPurchase);
         receipt.setNumberOfBooksBought(numOfCopies);
         receipt.setFinalPrice(finalPrice);
 
+        boughtBooks.clear();
 
         receiptService.save(receipt);
 
