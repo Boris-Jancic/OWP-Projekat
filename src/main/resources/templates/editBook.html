@@ -37,43 +37,83 @@
     </nav>
 
     <h2>Izmena knjige</h2>
-    <a href="../Knjige">Nazad na pregled knjiga</a><br>
+    <a class="link-button" href="../Knjige">Nazad na pregled knjiga</a><br>
     <p th:text="${'Ulogovan je: ' + user.userName}"></p>
     <p th:text="${'Tip korisnika: ' + user.userType}"></p>
-    <a href="../Korisnici/Logout">Odjavi se</a><br>
+    <a class="link-button" href="../Korisnici/Logout">Odjavi se</a><br>
 
     <div class="create-container">
         <h3>Izmena knjige</h3>
-        <form method="post" action="Izmeni">
-            <table class="forma">
-                <tr><th>Naziv knjige: </th><td><input type="text" th:value="${book.name}" name="name"/></td></tr>
-                <tr><th>ISBN(13 cifara): </th><td><input type="text" th:value="${book.isbn}" name="isbn"/></td></tr>
-                <tr><th>Izdavacka kuca: </th><td><input type="text" th:value="${book.publisher}" name="publisher"/></td></tr>
-                <tr><th>Autor(i): </th><td><input type="text" th:value="${book.authors}" name="authors"/></td></tr>
-                <tr><th>Datum izdavanja:</th><td><input type="date" th:value="${book.yearOfRelease}" name="released"/></td></tr>
-                <tr><th>Opis:</th><td><input type="textbox" th:value="${book.description}" name="description"/></td></tr>
-                <tr><th>URL do slike:</th><td><input type="text" th:value="${book.picture}" name="picture"/></td></tr>
-                <tr><th>Broj strana:</th><td><input type="number" th:value="${book.numOfPages}" name="pages"/></td></tr>
+        <form method="post" th:action="@{Izmeni}">
+        <table class="forma">
+            <tr>
+                <input type="hidden" th:value="${book.isbn}" name="isbn"/>
+                <td>Naziv knjige: </td>
+                <td><input type="text" name="name" th:value="${book.name}" th:field="*{book.name}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.name')}">Prazno polje</b></td>
+            </tr>
 
-                <tr><th> Tip proizvoda </th>
-                    <td scope="row">
-                        <select name="coverType">
-                            <option value="HARD" th:selected="${book.typeOfCover.toString()}">HARD</option>
-                            <option value="SOFT" th:selected="${book.typeOfCover.toString()}">SOFT</option>
-                        </select>
-                </tr></td>"
-                <tr><th> Pismo </th>
-                    <td scope="row">
-                        <select name="letterType">
-                            <option value="LATIN" th:selected="${book.letter.toString()}">LATIN</option>
-                            <option value="CYRILIC" th:selected="${book.letter.toString()}">CYRILIC</option>
-                        </select>
-                </tr></td>
+            <tr>
+                <th>Izdavacka kuca: </th>
+                <td><input type="text" name="publisher" th:value="${book.publisher}" th:field="*{book.publisher}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.publisher')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <th>Autor(i): </th>
+                <td><input type="text" name="author" th:value="${book.author}" th:field="*{book.author}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.author')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <th>Datum izdavanja:</th>
+                <td><input type="date" name="yearOfRelease" th:value="${book.yearOfRelease}" th:field="*{book.yearOfRelease}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.yearOfRelease')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <td>Opis:</td>
+                <td><input type="text" name="description" th:value="${book.description}" th:field="*{book.description}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.description')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <th>URL do slike:</th>
+                <td><input type="text" name="picture" th:value="${book.picture}" th:field="*{book.picture}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.picture')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <th>Broj strana:</th>
+                <td><input type="number" name="numOfPages" th:value="${book.numOfPages}" th:field="*{book.numOfPages}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.numOfPages')}">Prazno polje</b></td>
+            </tr>
 
-                <tr><th>Jezik:</th><td><input type="text" th:value="${book.language}" name="language"/></td></tr>
-                <tr><th>Cena:</th><td><input type="number" th:value="${book.price}" name="price"/></td></tr>
-                <tr><th>Dostupnost:</th><td><input type="number" th:value="${book.remaining}" name="remaining"/></td></tr>
-                <tr><th></th><td><input type="submit" value="Izmeni"/></td></tr>
+            <tr>
+                <td> Tip proizvoda </td>
+                <td scope="row">
+                    <select name="cover">
+                        <option value="HARD" th:selected="${book.typeOfCover.toString()}">HARD</option>
+                        <option value="SOFT" th:selected="${book.typeOfCover.toString()}">SOFT</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td> Pismo </td>
+                <td scope="row">
+                    <select name="letter">
+                        <option value="LATIN" th:selected="${book.letter}">LATIN</option>
+                        <option value="CYRILIC" th:selected="${book.letter}">CYRILIC</option>
+                    </select>
+            </tr></td>
+
+            <tr>
+                <th>Jezik:</th>
+                <td><input type="text" name="language" th:value="${book.language}" th:field="*{book.language}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.language')}">Prazno polje</b></td>
+            </tr>
+            <tr>
+                <th>Cena:</th>
+                <td><input type="number" name="price" th:value="${book.price}" th:field="*{book.price}"/></td>
+                <td><b colspan="2" th:if="${#fields.hasErrors('book.language')}">Prazno polje</b></td>
+            </tr>
+
+            <tr><td></td><td><input type="submit" class="btnSubmit" value="Izmeni"/></td></tr>
             </table>
         </form>
     </div>
