@@ -85,22 +85,23 @@
             </tr>
 
             <tr>
-                <td> Tip proizvoda </td>
-                <td scope="row">
-                    <select name="cover">
-                        <option value="HARD" th:selected="${book.typeOfCover.toString()}">HARD</option>
-                        <option value="SOFT" th:selected="${book.typeOfCover.toString()}">SOFT</option>
-                    </select>
-                </td>
-            </tr>
+            <td> Tip proizvoda </td>
+            <td scope="row">
+                <select name="cover">
+                    <option th:selected="${#strings.equals(book.typeOfCover.toString(), 'SOFT')}">SOFT</option>
+                    <option th:selected="${#strings.equals(book.typeOfCover.toString(), 'HARD')}">HARD</option>
+                </select>
+            </td>
+        </tr>
             <tr>
                 <td> Pismo </td>
                 <td scope="row">
-                    <select name="letter">
-                        <option value="LATIN" th:selected="${book.letter}">LATIN</option>
-                        <option value="CYRILIC" th:selected="${book.letter}">CYRILIC</option>
+                    <select name="letter" >
+                        <option th:selected="${#strings.equals(book.letter.toString(), 'LATIN')}">LATIN</option>
+                        <option th:selected="${#strings.equals(book.letter.toString(), 'CYRILIC')}">CYRILIC</option>
                     </select>
-            </tr></td>
+                </td>
+            </tr>
 
             <tr>
                 <th>Jezik:</th>
