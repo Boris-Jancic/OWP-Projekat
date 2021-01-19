@@ -211,6 +211,8 @@ public class BookController {
         book.setLetter(ELetter.valueOf(letter));
         book.setPrice(book.getPrice());
         book.setLanguage(book.getLanguage());
+        book.setRemaining(book.getRemaining());
+        book.setRating(book.getRating());
 
         if (bindingResult.hasErrors()) {
             ModelAndView error = new ModelAndView("editBook");

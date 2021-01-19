@@ -48,6 +48,8 @@
         <table class="forma">
             <tr>
                 <input type="hidden" th:value="${book.isbn}" name="isbn"/>
+                <input type="hidden" th:value="${book.remaining}" name="remaining"/>
+                <input type="hidden" th:value="${book.rating}" name="rating"/>
                 <td>Naziv knjige: </td>
                 <td><input type="text" name="name" th:value="${book.name}" th:field="*{book.name}"/></td>
                 <td><b colspan="2" th:if="${#fields.hasErrors('book.name')}">Prazno polje</b></td>
