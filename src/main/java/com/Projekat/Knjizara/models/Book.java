@@ -2,6 +2,7 @@ package com.Projekat.Knjizara.models;
 
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
+import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,8 +34,9 @@ public class Book {
     @NotBlank(message = "Ne treba da bude prazno polje")
     @Size(min=1, max=40)
     private String author;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date yearOfRelease;
 
     @NotBlank(message = "Ne treba da bude prazno polje")

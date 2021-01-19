@@ -36,6 +36,7 @@ public class User {
     @Size(min=1, max=30)
     private String lastName;
 
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date dateOfBirth;
 
