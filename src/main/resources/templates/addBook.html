@@ -75,7 +75,7 @@
 
                         <tr>
                             <td>Opis:</td>
-                            <td><input type="textbox" name="description" th:field="*{book.description}"/></td>
+                            <td><input type="textarea" name="description" th:field="*{book.description}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.description')}">Prazno polje</b></td>
                         </tr>
 
@@ -144,7 +144,7 @@
                         <tr>
                             <td>Datum izdavanja:</td><td><input type="date" name="yearOfRelease"/></td></tr>
                         <tr>
-                            <td>Opis:</td><td><input type="text" name="description"/></td></tr>
+                            <td>Opis:</td><td><input type="textarea" name="description"/></td></tr>
                         <tr>
                             <td>URL do slike:</td><td><input type="text" name="picture"/></td></tr>
                         <tr>

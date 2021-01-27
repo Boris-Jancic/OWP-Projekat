@@ -22,16 +22,16 @@
                     <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj">Dodaj knjigu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Knjige/Korpa">Korpa</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa">Korpa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Knjige/IstorijaKupovine">Istorija kupovina</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine">Istorija kupovina</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="#">Lista zelja</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja">Lista zelja</a>
                 </li>
             </ul>
         </div>

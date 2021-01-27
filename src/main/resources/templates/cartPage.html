@@ -18,10 +18,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="TabelaKnjiga">Tabelarni pregled</a>
+                    <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj">Dodaj knjigu</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:if="!${user.isAdmin()}" href="Korpa">Korpa</a>
@@ -30,7 +30,7 @@
                     <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine">Istorija kupovina</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="#">Lista zelja</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="ListaZelja">Lista zelja</a>
                 </li>
             </ul>
         </div>
@@ -74,7 +74,7 @@
             </th>
                 <th colspan="3"></th>
                 <form method="post" action="Kupi">
-                    <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input style="width: 100%;" type="submit" value="Kupi"/></th>
+                    <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input style="width: 100%;" type="submit" value="../Kupovina/Kupi"/></th>
                     <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right"  th:text="${'Ukupna cena: ' + finalPrice}"></th>
 
                 </form>
