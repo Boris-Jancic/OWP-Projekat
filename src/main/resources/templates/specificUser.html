@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+</head>
+<body>
+    <div th:fragment="centralDiv">
+        <link rel="stylesheet" href="../css/style.css"/>
+        <script src="../css/js/sorttable.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="title navbar-brand" href="#">Knjigerino</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
+        <h5 th:text="${'Tip : ' + user.userType}"></h5>
+        <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
+
+        <div class="create-container">
+            <p id="name" th:text="${'Ime : ' + wantedUser.name}"></p>
+            <p id="lastName" th:text="${'Prezime : ' + wantedUser.lastName}"></p>
+            <p id="email" th:text="${'Email : ' + wantedUser.email}"></p>
+            <p id="username" th:text="${'Korisnicko ime : ' + wantedUser.userName}"></p>
+            <p id="password" th:text="${'Sifra : ' + wantedUser.password}"></p>
+            <p id="dateOfBirth" th:text="${'Datum rodjenja : ' + wantedUser.dateOfBirth}"></p>
+            <p id="address" th:text="${'Adresa : ' + wantedUser.address}"></p>
+            <p id="phone" th:text="${'Telefon : ' + wantedUser.phone}"></p>
+            <p id="dateOfRegistration" th:text="${'Datum registracije : ' + wantedUser.dateOfRegistration}"></p>
+            <p id="type" th:text="${'Jezik: ' + wantedUser.userType.toString()}"></p>
+        </div>
+
+        <section class="flex-container">
+            <div class="container">
+                <table class="table table-sm table-dark">
+                    <thead>
+                    <tr>
+                        <th>ID kupovine</th>
+                        <th>Datum tranzakcije</th>
+                        <th>Ukupan broj knjiga</th>
+                        <th>Ukupna cena</th>
+                        <th>Pregled</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <div th:each="itReceipt, status: ${receipts}">
+                        <tr>
+                            <td th:text="${itReceipt.id}"></td>
+                            <td th:text="${itReceipt.dateOfPurchase}"></td>
+                            <td th:text="${itReceipt.numberOfBooksBought}"></td>
+                            <td th:text="${itReceipt.finalPrice}"></td>
+                            <td>
+                                <form method="get" action="../Kupovina/DetaljiKupovine">
+                                    <input type="hidden" name="receiptID" th:value="${itReceipt.id}">
+                                    <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Pregled Kupovine">
+                                </form>
+                            </td>
+                        </tr>
+                    </div>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </div>
+</body>
+</html>
