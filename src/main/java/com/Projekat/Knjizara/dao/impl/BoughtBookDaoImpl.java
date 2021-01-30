@@ -63,8 +63,7 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
     @Override
     public List<BoughtBook> findBoughtBooksOnReceipt(String id) {
         String sql = "SELECT * FROM boughtbooks " +
-                        "WHERE idReceipt = ?" +
-                        "GROUP BY id, username, book, numOfCopies, price, idReceipt";
+                        "WHERE idReceipt = ?";
         return jdbcTemplate.query(sql, new BoughtBookRowMapper(), id);
     }
 
