@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+
+</head>
+<body>
+    <div th:fragment="centralDiv">
+        <link rel="stylesheet" href="../css/style.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="title navbar-brand" href="#">Knjigerino</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici">Dodaj knjigu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Korpa">Korpa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine">Istorija kupovina</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="ListaZelja">Lista zelja</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <a class="link-button" href="../Knjige">Pregled svih knjiga</a><br>
+        <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
+        <h5 th:text="${'Tip : ' + user.userType}"></h5>
+        <a class="link-button" href="../Korisnici/Logout">Odjavi se</a>
+
+        <div class="container">
+            <table class="table table-sm table-dark">
+                <thead>
+                <tr>
+                    <th>Slika</th>
+                    <th>Naziv knjige</th>
+                    <th>Autor</th>
+                    <th>Kolicina primeraka</th>
+                    <th>Cena</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <div th:each="itBoughtBook, status: ${receiptBooks}">
+                        <tr>
+                            <td><img class="book-cover-cart" th:src="${itBoughtBook.book.picture}" style=";"></td>
+                            <td class="cart-item-text" th:text="${itBoughtBook.book.name}"></td>
+                            <td class="cart-item-text" th:text="${itBoughtBook.book.getAuthor}"></td>
+                            <td class="cart-item-text" th:text="${itBoughtBook.numOfCopies}"></td>
+                            <td class="cart-item-text" th:text="${itBoughtBook.price}"></td>
+                        </tr>
+                    </div>
+                </tbody>
+
+                <th class="float-right"  th:text="${'Ukupna cena: ' + finalPrice}"></th>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -66,31 +66,13 @@
                             <td th:text="${itReceipt.finalPrice}"></td>
                             <td>
                                 <form method="get" action="DetaljiKupovine">
-                                    <input type="hidden" name="isbn" th:value="${itReceipt.id}">
+                                    <input type="hidden" name="receiptID" th:value="${itReceipt.id}">
                                     <br>
                                     <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Pregled Kupovine">
                                 </form>
                             </td>
                         </tr>
                     </div>
-                </tbody>
-            </table>
-
-                <div th:each="itBook, status: ${books}">
-                    <tr>
-                        <td class="cart-item-text" th:text="${itBook.name}"></td>
-                        <td class="cart-item-text" th:text="${itBook.authors}"></td>
-                        <td class="cart-item-text" th:text="${itBook.rating}"></td>
-                        <td class="cart-item-text" th:if="${user.isAdmin()}" th:text="${itBook.remaining}"></td>
-                        <td class="cart-item-text" th:text="${itBook.price}"></td>
-                        <td>
-                            <form method="get" action="Detalji">
-                                <input type="hidden" name="isbn" th:value="${itBook.isbn}">
-                                <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Pregled kupovine">
-                            </form>
-                        </td>
-                    </tr>
-                </div>
                 </tbody>
             </table>
         </div>
