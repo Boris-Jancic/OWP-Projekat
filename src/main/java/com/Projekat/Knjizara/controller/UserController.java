@@ -1,7 +1,10 @@
 package com.Projekat.Knjizara.controller;
 
+import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.Receipt;
 import com.Projekat.Knjizara.models.User;
 import com.Projekat.Knjizara.models.enums.EType;
+import com.Projekat.Knjizara.service.ReceiptService;
 import com.Projekat.Knjizara.service.UserService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
 @RequestMapping(value="/Korisnici")
@@ -32,7 +36,14 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private ReceiptService receiptService;
+
+    @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private HttpSession session;
+
     private String bURL;
 
     @PostConstruct
@@ -42,7 +53,7 @@ public class UserController {
 
 
     @GetMapping
-    public ModelAndView index(HttpSession session, HttpServletResponse response) throws IOException {
+    public ModelAndView index(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
@@ -51,12 +62,14 @@ public class UserController {
             return null;
         }
 
-        ModelAndView result = new ModelAndView("Korisnici");
+        List<User> users = userService.findAll();
+
+        ModelAndView result = new ModelAndView("userPage");
         result.addObject("user", loggedUser);
+        result.addObject("users", users);
 
         return result;
     }
-
 
     @GetMapping(value = "/Registracija")
     public ModelAndView create() {
@@ -66,8 +79,7 @@ public class UserController {
 
 
     @PostMapping(value = "/Registracija")
-    public ModelAndView create(@Valid User client, BindingResult bindingResult,
-                       HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView create(@Valid User client, BindingResult bindingResult, HttpServletResponse response) throws IOException {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
@@ -90,7 +102,7 @@ public class UserController {
 
     @PostMapping(value = "/Login")
     public ModelAndView postLogin(@RequestParam(required = false) String username, @RequestParam(required = false) String password,
-                          HttpSession session, HttpServletResponse response) throws IOException {
+                                  HttpServletResponse response) throws IOException {
         try {
             // validacija
             User loggedUser = userService.checkLogin(username, password);
@@ -122,7 +134,7 @@ public class UserController {
     }
 
     @GetMapping(value="/Logout")
-    public void logout(HttpServletResponse response, HttpSession session) throws IOException {
+    public void logout(HttpServletResponse response) throws IOException {
         session.invalidate();
 
         System.out.println("Korisnik odjavljen");
@@ -130,4 +142,24 @@ public class UserController {
         response.sendRedirect(bURL);
     }
 
+    @GetMapping(value = "/Detalji")
+    public ModelAndView details(@RequestParam String username, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        User user = userService.findOne(username);
+
+        List<Receipt> receipts = receiptService.findByUser(username);
+
+        ModelAndView result = new ModelAndView("specificUser");
+        result.addObject("user", loggedUser);
+        result.addObject("wantedUser", user);
+        result.addObject("receipts", receipts);
+        return result;
+    }
 }
