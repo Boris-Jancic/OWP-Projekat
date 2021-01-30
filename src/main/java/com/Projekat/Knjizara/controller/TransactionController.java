@@ -158,10 +158,6 @@ public class TransactionController {
 
         List<Receipt> receipts = receiptService.findByUser(loggedUser.getUserName());
 
-        for (Receipt r : receipts){
-            System.out.println(r);
-        }
-
         ModelAndView result = new ModelAndView("receiptPage");
         result.addObject("user", loggedUser);
         result.addObject("receipts", receipts);
@@ -220,5 +216,29 @@ public class TransactionController {
         receiptService.save(receipt);
 
         response.sendRedirect(bURL + "Knjige/IstorijaKupovine");
+    }
+
+    @GetMapping(value = "/DetaljiKupovine")
+    public ModelAndView history(String receiptID, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<BoughtBook> boughtBooks = boughtBookService.findBoughtBooksOnReceipt(receiptID);
+
+        int finalPrice = 0;
+        for (BoughtBook bB : boughtBooks) {
+            finalPrice += bB.getPrice();
+        }
+
+        ModelAndView result = new ModelAndView("specificReceipt");
+        result.addObject("user", loggedUser);
+        result.addObject("receiptBooks", boughtBooks);
+        result.addObject("finalPrice", finalPrice);
+        return result;
     }
 }
