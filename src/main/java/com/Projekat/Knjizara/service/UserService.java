@@ -19,5 +19,5 @@ public interface UserService {
 
     void update(User user);
 
-    void delete(String username);
+    void block(String username, boolean blocked);
 }

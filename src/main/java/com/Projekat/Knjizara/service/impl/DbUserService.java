@@ -45,7 +45,7 @@ public class DbUserService implements UserService {
     }
 
     @Override
-    public void delete(String username) {
-        userDao.delete(username);
+    public void block(String username, boolean blocked) {
+        userDao.block(username, blocked);
     }
 }
