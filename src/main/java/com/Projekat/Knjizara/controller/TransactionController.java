@@ -215,7 +215,7 @@ public class TransactionController {
 
         receiptService.save(receipt);
 
-        response.sendRedirect(bURL + "Knjige/IstorijaKupovine");
+        response.sendRedirect(bURL + "Kupovina/IstorijaKupovine");
     }
 
     @GetMapping(value = "/DetaljiKupovine")
