@@ -117,15 +117,15 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) {
         String sql = "UPDATE users SET username = ?, password = ?, email = ?, name = ?, lastName = ?, dateOfBirth = ?, address = ?, phone = ?," +
-                " dateOfRegistration = ?, userType = ?, active = ? ";
+                " dateOfRegistration = ?, userType = ?, active = ? WHERE username like ?";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
                 user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(),
-                user.getDateOfRegistration(), user.getUserType().toString(), user.isActive());
+                user.getDateOfRegistration(), user.getUserType().toString(), user.isActive(), user.getUserName());
     }
 
     @Override
-    public void delete(String username) {
-        String sql = "DELETE FROM users WHERE username = ?";
-        jdbcTemplate.update(sql, username);
+    public void block(String username, boolean blocked) {
+        String sql = "UPDATE users SET active = ? WHERE username like ?";
+        jdbcTemplate.update(sql, blocked, username);
     }
 }

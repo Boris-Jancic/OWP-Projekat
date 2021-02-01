@@ -19,5 +19,5 @@ public interface UserDao {
 
     public void update(User user);
 
-    public void delete(String username);
+    public void block(String username, boolean blocked);
 }
