@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
    <title>Knjizara</title>
-
 </head>
 <body>
-    <div th:fragment="centralDiv">
+    <div th:fragment="centralDiv">>
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="title navbar-brand" href="#">Knjigerino</a>
@@ -35,13 +37,20 @@
                     <li class="nav-item">
                         <a class="nav-link" th:if="!${user.isAdmin()}" href="Kupovina/ListaZelja">Lista zelja</a>
                     </li>
+                    <li class="nav-item dropdown float-right">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                            Profil
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <p th:text="${'Ulogovan je: ' + user.userName}"></p>
+                            <p th:text="${'Tip : ' + user.userType}"></p>
+                            <div class="dropdown-divider"></div>
+                            <a href="Korisnici/Logout">Odjavi se</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </nav>
-
-        <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
-        <h5 th:text="${'Tip : ' + user.userType}"></h5>
-        <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
 
         <form action="Knjige/Pretraga">
             <div class="container">
