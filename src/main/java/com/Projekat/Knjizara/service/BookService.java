@@ -1,6 +1,7 @@
 package com.Projekat.Knjizara.service;
 
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.WishListItem;
 
 import java.util.List;
 
@@ -17,4 +18,10 @@ public interface BookService {
     void update(Book user);
 
     void delete(String isbn);
+
+    public List<WishListItem> userWishList(String username);
+
+    public void addToWishList(WishListItem wishListItem);
+
+    public void removeFromWishList(WishListItem wishListItem);
 }

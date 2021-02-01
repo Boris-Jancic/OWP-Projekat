@@ -1,12 +1,10 @@
 package com.Projekat.Knjizara.controller;
 
-import com.Projekat.Knjizara.models.Book;
-import com.Projekat.Knjizara.models.BoughtBook;
-import com.Projekat.Knjizara.models.Receipt;
-import com.Projekat.Knjizara.models.User;
+import com.Projekat.Knjizara.models.*;
 import com.Projekat.Knjizara.service.BookService;
 import com.Projekat.Knjizara.service.BoughtBookService;
 import com.Projekat.Knjizara.service.ReceiptService;
+import com.Projekat.Knjizara.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +30,9 @@ import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 public class TransactionController {
 
     public static final String SHOPPING_CART_KEY = "shoppingCart";
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private BookService bookService;
@@ -240,5 +241,61 @@ public class TransactionController {
         result.addObject("receiptBooks", boughtBooks);
         result.addObject("finalPrice", finalPrice);
         return result;
+    }
+
+    @GetMapping(value = "/ListaZelja")
+    public ModelAndView addToWishList(HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<WishListItem> wishListBooks = bookService.userWishList(loggedUser.getUserName());
+
+        ModelAndView result = new ModelAndView("wishListPage");
+        result.addObject("user", loggedUser);
+        result.addObject("wishListBooks", wishListBooks);
+        return result;
+    }
+
+    @PostMapping(value = "/DodajUListuZelja")
+    public void addToWishList(String username, String isbn, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        WishListItem wishListItem = new WishListItem();
+
+        wishListItem.setUser(userService.findOne(username));
+        wishListItem.setBook(bookService.findOne(isbn));
+        bookService.addToWishList(wishListItem);
+
+        response.sendRedirect(bURL + "Kupovina/ListaZelja");
+    }
+
+    @PostMapping(value = "/IzbaciIzListeZelja")
+    public void removeToWishList(String username, String isbn, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        WishListItem wishListItem = new WishListItem();
+
+        wishListItem.setUser(userService.findOne(username));
+        wishListItem.setBook(bookService.findOne(isbn));
+        bookService.removeFromWishList(wishListItem);
+
+        response.sendRedirect(bURL + "Kupovina/ListaZelja");
     }
 }

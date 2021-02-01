@@ -17,12 +17,6 @@ CREATE TABLE books
 	active BIT
 );
 
-CREATE TABLE bookGenres
-(	
-	bookISBN VARCHAR(13) NOT NULL,
-	genreName VARCHAR(30) NOT NULL
-);
-
 CREATE TABLE genres
 (	
 	name VARCHAR(30) NOT NULL PRIMARY KEY,

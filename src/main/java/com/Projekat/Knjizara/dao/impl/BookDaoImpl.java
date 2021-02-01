@@ -2,17 +2,19 @@ package com.Projekat.Knjizara.dao.impl;
 
 import com.Projekat.Knjizara.dao.BookDao;
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.User;
+import com.Projekat.Knjizara.models.WishListItem;
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
+import com.Projekat.Knjizara.service.BookService;
+import com.Projekat.Knjizara.service.UserService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -25,6 +27,12 @@ public class BookDaoImpl implements BookDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private BookService bookService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -44,7 +52,7 @@ public class BookDaoImpl implements BookDao {
             int pages = rs.getInt(index++);
             String cover = rs.getString(index++);
             String letter = rs.getString(index++);
-            String language = rs.getString(index++);;
+            String language = rs.getString(index++);
             float price = rs.getFloat(index++);
             int remaining = rs.getInt(index++);
             float rating = rs.getInt(index++);
@@ -72,6 +80,23 @@ public class BookDaoImpl implements BookDao {
         }
     }
 
+    private class WishListRowMapper implements RowMapper<WishListItem> {
+
+        @Override
+        public WishListItem mapRow(ResultSet rs, int i) throws SQLException {
+            int index = 1;
+            User user = userService.findOne(rs.getString(index++));
+            Book book = bookService.findOne(rs.getString(index++));
+
+            WishListItem wishListItem = new WishListItem();
+
+            wishListItem.setUser(user);
+            wishListItem.setBook(book);
+
+            return wishListItem;
+        }
+    }
+
     @Override
     public Book findOne(String isbn) {
         try {
@@ -87,12 +112,6 @@ public class BookDaoImpl implements BookDao {
         String sql = "SELECT * FROM books";
         return jdbcTemplate.query(sql, new BookRowMapper());
     }
-
-//    @Override
-//    public List<Book> findAll() {
-//        String sql = "SELECT * FROM books";
-//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Book.class));
-//    }
 
     @Override
     public List<Book> find(String isbn, String name, float minPrice, float maxPrice, String author, String language) {// TODO: dodaj pretragu po zanru
@@ -176,6 +195,24 @@ public class BookDaoImpl implements BookDao {
     public void delete(String isbn) {
         String sql = "DELETE FROM books WHERE isbn = ?";
         jdbcTemplate.update(sql, isbn);
+    }
+
+    @Override
+    public List<WishListItem> userWishList(String username) {
+        String sql = "SELECT * FROM wishLists WHERE username = ?";
+        return jdbcTemplate.query(sql, new WishListRowMapper(), username);
+    }
+
+    @Override
+    public void addToWishList(WishListItem wishListItem) {
+        String sql = "INSERT INTO wishLists (username, isbn) VALUES (?, ?)";
+        jdbcTemplate.update(sql, wishListItem.getUser().getUserName(), wishListItem.getBook().getIsbn());
+    }
+
+    @Override
+    public void removeFromWishList(WishListItem wishListItem) {
+        String sql = "DELETE FROM wishLists WHERE username = ? AND isbn = ?";
+        jdbcTemplate.update(sql, wishListItem.getUser().getUserName(), wishListItem.getBook().getIsbn());
     }
 
 }
