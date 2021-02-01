@@ -56,7 +56,6 @@ public class UserController {
     public ModelAndView index(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -67,7 +66,6 @@ public class UserController {
         ModelAndView result = new ModelAndView("userPage");
         result.addObject("user", loggedUser);
         result.addObject("users", users);
-
         return result;
     }
 
@@ -106,10 +104,11 @@ public class UserController {
         try {
             // validacija
             User loggedUser = userService.checkLogin(username, password);
-
             if (loggedUser == null) {
-                System.out.println("Dati korisnik nije pronadjen");
                 throw new Exception("Neispravno korisničko ime ili lozinka!");
+            }
+            if (!loggedUser.isActive()) {
+                throw new Exception("Blokirani ste sa ovog sajta! Mars!");
             }
 
             // prijava
@@ -146,7 +145,6 @@ public class UserController {
     public ModelAndView details(@RequestParam String username, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -161,5 +159,50 @@ public class UserController {
         result.addObject("wantedUser", user);
         result.addObject("receipts", receipts);
         return result;
+    }
+
+    @PostMapping(value = "/Blokiraj")
+    public void block(@RequestParam boolean active, @RequestParam String username,
+                      HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        User wantedUser = userService.findOne(username);
+        if (active)
+            wantedUser.setActive(false);
+        else
+            wantedUser.setActive(true);
+
+        userService.block(wantedUser.getUserName(), wantedUser.isActive());
+
+        response.sendRedirect(bURL + "Korisnici/Detalji?username=" + wantedUser.getUserName());
+    }
+
+
+    @PostMapping(value = "/PromeniTip")
+    public void changeType(@RequestParam String username,
+                      HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        User wantedUser = userService.findOne(username);
+
+        if(wantedUser.getUserType() == EType.ADMIN){
+            wantedUser.setUserType(EType.CLIENT);
+        } else {
+            wantedUser.setUserType(EType.ADMIN);
+        }
+
+        userService.update(wantedUser);
+
+        response.sendRedirect(bURL + "Korisnici/Detalji?username=" + wantedUser.getUserName());
     }
 }

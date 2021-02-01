@@ -29,7 +29,7 @@
 
         <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
         <h5 th:text="${'Tip : ' + user.userType}"></h5>
-        <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
+        <a class="link-button" href="../Korisnici/Logout">Odjavi se</a>
 
         <div class="create-container">
             <p id="name" th:text="${'Ime : ' + wantedUser.name}"></p>
@@ -41,11 +41,24 @@
             <p id="address" th:text="${'Adresa : ' + wantedUser.address}"></p>
             <p id="phone" th:text="${'Telefon : ' + wantedUser.phone}"></p>
             <p id="dateOfRegistration" th:text="${'Datum registracije : ' + wantedUser.dateOfRegistration}"></p>
-            <p id="type" th:text="${'Jezik: ' + wantedUser.userType.toString()}"></p>
+            <p id="type" th:text="${'Tip korisnika : ' + wantedUser.userType.toString()}"></p>
+
+            <div>
+                <form action="PromeniTip" method="post">
+                    <input type="hidden" name="username" th:value="${wantedUser.userName}">
+                    <input type="submit" class="btnSubmit fadeIn fourth" value="Promeni tip korisnika">
+                </form>
+                <form action="Blokiraj" method="post" th:if="${!wantedUser.isAdmin()}">
+                    <input type="hidden" name="active" th:value="${wantedUser.active}">
+                    <input type="hidden" name="username" th:value="${wantedUser.userName}">
+                    <input th:if="${wantedUser.active}" type="submit" class="btnSubmit fadeIn fourth" value="Blokiraj">
+                    <input th:if="${!wantedUser.active}" type="submit" class="btnSubmit fadeIn fourth" value="Odblokiraj">
+                </form>
+            </div>
         </div>
 
         <section class="flex-container">
-            <div class="container">
+            <div class="container"  th:if="${!wantedUser.isAdmin()}">
                 <table class="table table-sm table-dark">
                     <thead>
                     <tr>
