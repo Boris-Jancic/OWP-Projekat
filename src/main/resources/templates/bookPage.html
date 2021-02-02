@@ -29,6 +29,9 @@
                         <a class="nav-link" th:if="${user.isAdmin()}" href="Korisnici/">Pregled korisnika</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="Komentari/">Odobravanje komentara</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" th:if="!${user.isAdmin()}" href="Kupovina/Korpa">Korpa</a>
                     </li>
                     <li class="nav-item">
