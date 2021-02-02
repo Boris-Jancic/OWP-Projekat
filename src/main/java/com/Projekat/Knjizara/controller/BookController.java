@@ -1,15 +1,12 @@
 package com.Projekat.Knjizara.controller;
 
-import com.Projekat.Knjizara.models.Book;
-import com.Projekat.Knjizara.models.BoughtBook;
-import com.Projekat.Knjizara.models.Receipt;
-import com.Projekat.Knjizara.models.User;
+import com.Projekat.Knjizara.models.*;
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
+import com.Projekat.Knjizara.models.enums.EStatus;
 import com.Projekat.Knjizara.models.enums.EType;
 import com.Projekat.Knjizara.service.BookService;
-import com.Projekat.Knjizara.service.BoughtBookService;
-import com.Projekat.Knjizara.service.ReceiptService;
+import com.Projekat.Knjizara.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -26,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,16 +36,11 @@ import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 @RequestMapping(value = "/Knjige")
 public class BookController {
 
-    public static final String SHOPPING_CART_KEY = "shoppingCart";
-
     @Autowired
     private BookService bookService;
 
     @Autowired
-    private ReceiptService receiptService;
-
-    @Autowired
-    private BoughtBookService boughtBookService;
+    private CommentService commentService;
 
     @Autowired
     private ServletContext servletContext;
@@ -72,7 +63,6 @@ public class BookController {
     public ModelAndView Index(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         User user = (User) request.getSession().getAttribute(UserController.USER_KEY);
-
         if (user == null) {
             response.sendRedirect(bURL);
             return null;
@@ -102,17 +92,18 @@ public class BookController {
     public ModelAndView details(@RequestParam String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
         }
 
         Book book = bookService.findOne(isbn);
+        List<Comment> comments = commentService.findBookComments(isbn);
 
         ModelAndView result = new ModelAndView("specificBook");
-        result.addObject("book", book);
         result.addObject("user", loggedUser);
+        result.addObject("book", book);
+        result.addObject("comments", comments);
         return result;
     }
 
@@ -120,7 +111,6 @@ public class BookController {
     public ModelAndView create(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -139,8 +129,7 @@ public class BookController {
             int index = (int) (rnd.nextFloat() * numChars.length());
             stringBuilder.append(numChars.charAt(index));
         }
-        String saltStr = stringBuilder.toString();
-        return saltStr;
+        return stringBuilder.toString();
     }
 
     @PostMapping(value = "/Dodaj")
@@ -148,7 +137,6 @@ public class BookController {
                        HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -176,7 +164,6 @@ public class BookController {
     public ModelAndView edit(@RequestParam String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
             response.sendRedirect(bURL);
             return null;
@@ -194,7 +181,6 @@ public class BookController {
     public ModelAndView edit(@Valid Book book, BindingResult bindingResult, String cover, String letter, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
             response.sendRedirect(bURL);
             return null;
@@ -229,19 +215,17 @@ public class BookController {
 
     @GetMapping(value = "/Pretraga")
     public ModelAndView create(@RequestParam(required = false) String isbn, @RequestParam(required = false) String name,
-                               @RequestParam(required = false) String genre, @RequestParam(required = false) float minPrice,
-                               @RequestParam(required = false) float maxPrice, @RequestParam(required = false) String author,
-                               @RequestParam(required = false) String language,
+                               @RequestParam(required = false) float minPrice, @RequestParam(required = false) float maxPrice,
+                               @RequestParam(required = false) String author, @RequestParam(required = false) String language,
                                HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
         }
 
-        ModelAndView result = new ModelAndView("searchPage");;
+        ModelAndView result = new ModelAndView("searchPage");
         if (isEmpty(isbn) && isEmpty(name) &&  isEmpty(author) && minPrice == 0 && maxPrice == 0 && isEmpty(language)) {
             result.addObject("books", bookService.findAll());
         } else {
@@ -258,7 +242,6 @@ public class BookController {
                      HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null || !loggedUser.getUserType().equals(EType.ADMIN)) {
             response.sendRedirect(bURL);
             return;
@@ -275,7 +258,6 @@ public class BookController {
     public ModelAndView bookTable(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -290,4 +272,54 @@ public class BookController {
         return result;
     }
 
+    @GetMapping(value = "/Recenzija")
+    public ModelAndView rateBook(@RequestParam String isbn, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<Comment> comments = commentService.findBookComments(isbn);
+        for (Comment c : comments) {
+            if (loggedUser.getUserName().equals(c.getAuthor().getUserName()) && c.getBook().getIsbn().equals(isbn)){
+                response.sendRedirect(bURL + "Knjige/Detalji?isbn=" + isbn);
+            }
+        }
+
+        ModelAndView result = new ModelAndView("rateBook");
+        result.addObject("user", loggedUser);
+        result.addObject("book", isbn);
+        return result;
+    }
+
+    @PostMapping(value = "/ObjaviRecenziju")
+    public void sendCommentReq(@RequestParam String isbn, @RequestParam String text, @RequestParam float grade,
+                               HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        String commentID = randomAlphanumeric(9);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String dateOfComment = dtf.format(now);
+
+        Comment newComment = new Comment();
+        newComment.setId(commentID);
+        newComment.setAuthor(loggedUser);
+        newComment.setText(text);
+        newComment.setBook(bookService.findOne(isbn));
+        newComment.setRating(grade);
+        newComment.setDateOfComment(dateOfComment);
+        newComment.setStatus(EStatus.WAITING);
+
+        commentService.saveComment(newComment);
+        response.sendRedirect(bURL + "Knjige/Detalji?isbn=" + isbn);
+    }
 }
