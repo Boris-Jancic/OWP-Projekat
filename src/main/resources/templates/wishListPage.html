@@ -10,9 +10,12 @@
     <link rel="stylesheet" href="../css/style.css"/>
     <script src="../css/js/sorttable.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="title navbar-brand" href="#">Knjigerino</a>
+        <a class="title navbar-brand" href="../Knjige">Knjigerino</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,25 +25,46 @@
                     <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj">Dodaj knjigu</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa">Korpa</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/">Pregled korisnika</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine">Istorija kupovina</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi">Odobravanje loyalty kartica</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja">Lista zelja</a>
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/">Odobravanje komentara</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="Korpa">Korpa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine">Istorija kupovina</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="ListaZelja">Lista zelja</a>
+                </li>
+                <li class="nav-item dropdown float-right">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                        <i><b>PROFIL</b></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <p th:text="${'Ulogovan je: ' + user.userName}"></p>
+                        <p th:text="${'Tip : ' + user.userType}"></p>
+                        <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
+                        <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
+                        <form method="post" th:if="!${user.isAdmin()}" action="../Kupovina/LoyaltyReq">
+                            <input th:if="!${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" type="submit"
+                                   class="form-control btnSubmit fadeIn fourth" value="Posalji zahtev za bonus karticu">
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <a href="../Korisnici/Logout">Odjavi se</a>
+                    </div>
                 </li>
             </ul>
         </div>
     </nav>
-
-    <a class="link-button" href="../Knjige">Pregled svih knjiga</a><br>
-    <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
-    <h5 th:text="${'Tip : ' + user.userType}"></h5>
-    <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
 
     <section class="flex-container">
         <div class="container">
