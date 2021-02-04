@@ -17,10 +17,10 @@ CREATE TABLE books
 	active BIT
 );
 
-CREATE TABLE genres
+CREATE TABLE wishLists
 (	
-	name VARCHAR(30) NOT NULL PRIMARY KEY,
-	description VARCHAR(100) NOT NULL
+	username VARCHAR(30) NOT NULL,
+	isbn VARCHAR(13) NOT NULL
 );
 
 CREATE TABLE boughtBooks
@@ -54,16 +54,18 @@ CREATE TABLE users
     phone VARCHAR(30) NOT NULL,
 	dateOfRegistration VARCHAR(30) NOT NULL,
     userType  VARCHAR(30) NOT NULL,
-	active BIT NOT NULL
+	active BIT NOT NULL,
+    status VARCHAR(30) NOT NULL,
+	points int NOT NULL
 );
 
 CREATE TABLE comments
 (	
-name VARCHAR(30) NOT NULL,
-	comment_text VARCHAR(300) NOT NULL,
-	grade FLOAT NOT NULL,
-	dateOfComment DATE NOT NULL,
+	id VARCHAR(10) NOT NULL PRIMARY KEY,
 	author VARCHAR(30) NOT NULL,
-	commentedBook VARCHAR(13) NOT NULL,
+	text VARCHAR(300) NOT NULL,
+	book VARCHAR(13) NOT NULL,
+	grade float NOT NULL,
+	dateOfComment DATE NOT NULL,
     status VARCHAR(30)
 );

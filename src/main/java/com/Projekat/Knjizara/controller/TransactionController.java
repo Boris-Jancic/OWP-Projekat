@@ -7,6 +7,7 @@ import com.Projekat.Knjizara.service.ReceiptService;
 import com.Projekat.Knjizara.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
@@ -314,6 +317,36 @@ public class TransactionController {
         }
 
         userService.updateLoyaltyCardReq("WAITING", loggedUser.getUserName());
+
+        response.sendRedirect(bURL + "Knjige");
+    }
+
+    @GetMapping(value = "/DodajAkciju")
+    public ModelAndView addAction(String isbn, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        ModelAndView result = new ModelAndView("addDiscount");
+        result.addObject("isbn", isbn);
+        result.addObject("user", loggedUser);
+        return result;
+    }
+
+    @PostMapping(value = "/ObjaviAkciju")
+    public void addAction(@Valid Discount discount, BindingResult bindingResult, HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        discount.setId(randomAlphanumeric(9));
+        bookService.addDiscount(discount);
 
         response.sendRedirect(bURL + "Knjige");
     }

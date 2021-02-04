@@ -60,6 +60,12 @@
                             <a href="Korisnici/Logout">Odjavi se</a>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <form th:if="${user.isAdmin()}" method="get" action="Kupovina/DodajAkciju">
+                            <input type="hidden" name="isbn" value="0000000000000">
+                            <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Objavi akciju">
+                        </form>
+                    </li>
                 </ul>
             </div>
         </nav>

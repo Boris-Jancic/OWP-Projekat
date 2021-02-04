@@ -2,6 +2,7 @@ package com.Projekat.Knjizara.service.impl;
 
 import com.Projekat.Knjizara.dao.BookDao;
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.Discount;
 import com.Projekat.Knjizara.models.WishListItem;
 import com.Projekat.Knjizara.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +55,13 @@ public class DbBookService implements BookService {
 
     @Override
     public void removeFromWishList(WishListItem wishListItem) { bookDao.removeFromWishList(wishListItem); }
+
+    @Override
+    public void addDiscount(Discount discount) { bookDao.addDiscount(discount); }
+
+    @Override
+    public Discount checkIfDiscountAll() { return bookDao.checkIfDiscountAll(); }
+
+    @Override
+    public Discount checkIfDiscountSpecific(String isbn) { return bookDao.checkIfDiscountSpecific(isbn); }
 }

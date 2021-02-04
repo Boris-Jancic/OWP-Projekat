@@ -2,6 +2,7 @@ package com.Projekat.Knjizara.dao.impl;
 
 import com.Projekat.Knjizara.dao.BookDao;
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.Discount;
 import com.Projekat.Knjizara.models.User;
 import com.Projekat.Knjizara.models.WishListItem;
 import com.Projekat.Knjizara.models.enums.ECover;
@@ -21,6 +22,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 
 @Repository
 public class BookDaoImpl implements BookDao {
@@ -77,6 +80,29 @@ public class BookDaoImpl implements BookDao {
             book.setActive(active);
 
             return book;
+        }
+    }
+    private class DiscountRowMapper implements RowMapper<Discount> {
+
+        @Override
+        public Discount mapRow(ResultSet rs, int i) throws SQLException {
+            int index = 1;
+            String id = rs.getString(index++);
+            int discount = rs.getInt(index++);
+            Date start = rs.getDate(index++);
+            Date end = rs.getDate(index++);
+            String isbn = "";
+            if (rs.next())
+                isbn = rs.getString(index++);
+
+            Discount rowDiscount = new Discount();
+            rowDiscount.setId(id);
+            rowDiscount.setDiscount(discount);
+            rowDiscount.setStart(start);
+            rowDiscount.setEnd(end);
+            rowDiscount.setBook(isbn);
+
+            return rowDiscount;
         }
     }
 
@@ -213,6 +239,24 @@ public class BookDaoImpl implements BookDao {
     public void removeFromWishList(WishListItem wishListItem) {
         String sql = "DELETE FROM wishLists WHERE username = ? AND isbn = ?";
         jdbcTemplate.update(sql, wishListItem.getUser().getUserName(), wishListItem.getBook().getIsbn());
+    }
+
+    @Override
+    public void addDiscount(Discount discount) {
+        String sql = "INSERT INTO discounts (id, discount, startDisc, endDisc, isbn) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, discount.getId(), discount.getDiscount(), discount.getStart(), discount.getEnd(),discount.getBook());
+    }
+
+    @Override
+    public Discount checkIfDiscountAll() {
+        String sql = "SELECT * FROM discounts WHERE CURDATE() between startDisc and endDisc and isbn like '0000000000000'";
+        return jdbcTemplate.queryForObject(sql, new DiscountRowMapper());
+    }
+
+    @Override
+    public Discount checkIfDiscountSpecific(String isbn) {
+        String sql = "SELECT * FROM discounts WHERE CURDATE() between startDisc and endDisc and isbn like ?";
+        return jdbcTemplate.queryForObject(sql, new DiscountRowMapper());
     }
 
 }

@@ -1,8 +1,10 @@
 package com.Projekat.Knjizara.dao;
 
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.Discount;
 import com.Projekat.Knjizara.models.WishListItem;
 
+import java.util.Date;
 import java.util.List;
 
 public interface BookDao {
@@ -24,4 +26,10 @@ public interface BookDao {
     public void addToWishList(WishListItem wishListItem);
 
     public void removeFromWishList(WishListItem wishListItem);
+
+    public void addDiscount(Discount discount);
+
+    public Discount checkIfDiscountAll();
+
+    public Discount checkIfDiscountSpecific(String isbn);
 }
