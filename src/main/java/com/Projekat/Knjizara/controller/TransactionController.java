@@ -63,8 +63,8 @@ public class TransactionController {
 
     @GetMapping(value = "/Korpa")
     public ModelAndView viewCart(HttpServletResponse response) throws IOException {
-        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -76,7 +76,6 @@ public class TransactionController {
         }
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
-
         int finalPrice = 0;
         for (BoughtBook bB : boughtBooks) {
             finalPrice += bB.getPrice();
@@ -94,7 +93,6 @@ public class TransactionController {
                                   HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -134,7 +132,6 @@ public class TransactionController {
                                HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return;
@@ -151,7 +148,6 @@ public class TransactionController {
     public ModelAndView history(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -166,10 +162,9 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/Kupi")
-    public void buy(HttpServletResponse response) throws IOException {
+    public void buy(int points, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return;
@@ -204,6 +199,11 @@ public class TransactionController {
             finalPrice += bB.getPrice();
         }
 
+        if (points > 0) {
+            float discount = (float) ((float) points * 0.05);
+            finalPrice = finalPrice - (finalPrice * discount);
+        }
+
         Receipt receipt = new Receipt();
         receipt.setId(receiptID);
         receipt.setBoughtBooks(boughtBooks);
@@ -212,8 +212,16 @@ public class TransactionController {
         receipt.setNumberOfBooksBought(numOfCopies);
         receipt.setFinalPrice(finalPrice);
 
-        boughtBooks.clear();
+        int aquiredPoints = (int) finalPrice / 1000;
 
+        if (aquiredPoints + loggedUser.getPoints() > 10) {
+            loggedUser.setPoints(10);
+        } else if (aquiredPoints > 0) {
+            loggedUser.setPoints(loggedUser.getPoints() + aquiredPoints);
+        }
+
+        boughtBooks.clear();
+        userService.update(loggedUser);
         receiptService.save(receipt);
 
         response.sendRedirect(bURL + "Kupovina/IstorijaKupovine");
@@ -223,7 +231,6 @@ public class TransactionController {
     public ModelAndView history(String receiptID, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -247,7 +254,6 @@ public class TransactionController {
     public ModelAndView addToWishList(HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return null;
@@ -265,7 +271,6 @@ public class TransactionController {
     public void addToWishList(String username, String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return;
@@ -284,7 +289,6 @@ public class TransactionController {
     public void removeToWishList(String username, String isbn, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return;
@@ -297,5 +301,20 @@ public class TransactionController {
         bookService.removeFromWishList(wishListItem);
 
         response.sendRedirect(bURL + "Kupovina/ListaZelja");
+    }
+
+
+    @PostMapping(value = "/LoyaltyReq")
+    public void sendLoyaltyCardReq(HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        userService.updateLoyaltyCardReq("WAITING", loggedUser.getUserName());
+
+        response.sendRedirect(bURL + "Knjige");
     }
 }

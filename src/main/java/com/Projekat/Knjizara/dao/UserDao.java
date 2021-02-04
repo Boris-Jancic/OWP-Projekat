@@ -13,6 +13,10 @@ public interface UserDao {
 
     public List<User> findAll();
 
+    public List<User> loyaltyCardReq();
+
+    public void updateLoyaltyCardReq(String request, String username);
+
     public List<User> find(String username);
 
     public void save(User user);

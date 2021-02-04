@@ -5,6 +5,7 @@ import com.Projekat.Knjizara.models.Book;
 import com.Projekat.Knjizara.models.enums.ECover;
 import com.Projekat.Knjizara.models.enums.ELetter;
 import com.Projekat.Knjizara.models.User;
+import com.Projekat.Knjizara.models.enums.EStatus;
 import com.Projekat.Knjizara.models.enums.EType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -40,6 +41,8 @@ public class UserDaoImpl implements UserDao {
             String dateOfRegistration = rs.getString(index++);
             String type = rs.getString(index++);
             boolean active = rs.getBoolean(index++);
+            String loyaltyCard = rs.getString(index++);
+            int points = rs.getInt(index++);
 
             User user = new User();
 
@@ -54,6 +57,8 @@ public class UserDaoImpl implements UserDao {
             user.setDateOfRegistration(dateOfRegistration);
             user.setUserType(EType.valueOf(type));
             user.setActive(active);
+            user.setLoyaltyCard(EStatus.valueOf(loyaltyCard));
+            user.setPoints(points);
 
             return user;
         }
@@ -86,6 +91,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public List<User> loyaltyCardReq() {
+        String sql = "SELECT * FROM users WHERE status LIKE 'WAITING'";
+        return jdbcTemplate.query(sql, new UserRowMapper());
+    }
+
+    @Override
+    public void updateLoyaltyCardReq(String request, String username) {
+        String sql = "UPDATE users SET status = ? WHERE username like ?";
+        jdbcTemplate.update(sql, request, username);
+    }
+
+    @Override
     public List<User> find(String username) {
 
         ArrayList<Object> argumentList = new ArrayList<Object>();
@@ -107,20 +124,20 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void save(User user) {
         String sql = "INSERT INTO users (username, password, email, name, lastName, dateOfBirth, address, phone," +
-                                        " dateOfRegistration, userType, active) " +
+                                        " dateOfRegistration, userType, active, status, points) " +
                 "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
                 user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(), user.getDateOfRegistration(),
-                user.getUserType().toString(), user.isActive());
+                user.getUserType().toString(), user.isActive(), "NOTAPPROVED", 0);
     }
 
     @Override
     public void update(User user) {
         String sql = "UPDATE users SET username = ?, password = ?, email = ?, name = ?, lastName = ?, dateOfBirth = ?, address = ?, phone = ?," +
-                " dateOfRegistration = ?, userType = ?, active = ? WHERE username like ?";
-        jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
-                user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(),
-                user.getDateOfRegistration(), user.getUserType().toString(), user.isActive(), user.getUserName());
+                " dateOfRegistration = ?, userType = ?, active = ?, points = ? WHERE username like ?";
+        jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(), user.getLastName(),
+                user.getDateOfBirth(), user.getAddress(), user.getPhone(), user.getDateOfRegistration(),
+                user.getUserType().toString(), user.isActive(), user.getPoints(), user.getUserName());
     }
 
     @Override

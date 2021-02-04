@@ -1,5 +1,6 @@
 package com.Projekat.Knjizara.models;
 
+import com.Projekat.Knjizara.models.enums.EStatus;
 import com.Projekat.Knjizara.models.enums.EType;
 import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,8 @@ public class User {
     private String dateOfRegistration;
     private EType userType;
     private boolean active;
+    private EStatus loyaltyCard;
+    private int points;
 
     public boolean isAdmin(){
         if (userType == EType.ADMIN)

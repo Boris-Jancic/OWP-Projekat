@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+</head>
+<body>
+<div th:fragment="centralDiv">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script src="../css/js/sorttable.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="title navbar-brand" href="#">Knjigerino</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <h4 th:text="${'Ulogovan je: ' + user.userName}"></h4>
+    <h5 th:text="${'Tip : ' + user.userType}"></h5>
+    <a class="link-button" href="Korisnici/Logout">Odjavi se</a>
+
+    <section class="flex-container">
+        <div class="container">
+            <table class="table table-sm table-dark sortable">
+                <thead>
+                <tr>
+                    <th>Ime</th>
+                    <th>Prezime</th>
+                    <th>Datum rodjenja</th>
+                    <th>Korisnicko ime</th>
+                    <th>Tip korisnika</th>
+                    <th>Datum registracije</th>
+                    <th>Odobri</th>
+                </tr>
+                </thead>
+                <tbody>
+                <div th:each="itUser, status: ${users}">
+                    <tr>
+                        <td class="cart-item-text" th:text="${itUser.name}"></td>
+                        <td class="cart-item-text" th:text="${itUser.lastName}"></td>
+                        <td class="cart-item-text" th:text="${itUser.dateOfBirth}"></td>
+                        <td class="cart-item-text" th:text="${itUser.userName}"></td>
+                        <td class="cart-item-text" th:text="${itUser.userType.toString()}"></td>
+                        <td class="cart-item-text" th:text="${itUser.dateOfRegistration}"></td>
+                        <td>
+                            <form method="post" action="Odobri">
+                                <input type="hidden" name="username" th:value="${itUser.userName}">
+                                <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Odobri">
+                            </form>
+                            <form method="post" action="Odbij">
+                                <input type="hidden" name="username" th:value="${itUser.userName}">
+                                <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Odbij">
+                            </form>
+                        </td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+        </form>
+    </section>
+
+</div>
+</body>
+</html>

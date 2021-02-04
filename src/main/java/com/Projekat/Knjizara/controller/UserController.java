@@ -1,6 +1,7 @@
 package com.Projekat.Knjizara.controller;
 
 import com.Projekat.Knjizara.models.Book;
+import com.Projekat.Knjizara.models.Comment;
 import com.Projekat.Knjizara.models.Receipt;
 import com.Projekat.Knjizara.models.User;
 import com.Projekat.Knjizara.models.enums.EType;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -204,5 +206,51 @@ public class UserController {
         userService.update(wantedUser);
 
         response.sendRedirect(bURL + "Korisnici/Detalji?username=" + wantedUser.getUserName());
+    }
+
+    @GetMapping(value = "/LoyaltyZahtevi")
+    public ModelAndView loyaltyReqPage(HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<User> users = userService.loyaltyCardReq();
+
+        ModelAndView result = new ModelAndView("cardReqPage");
+        result.addObject("user", loggedUser);
+        result.addObject("users", users);
+        return result;
+    }
+
+    @PostMapping(value = "/Odobri")
+    public void approveComment(@RequestParam String username, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        User user = (User) request.getSession().getAttribute(UserController.USER_KEY);
+        if (user == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        User loyaltyUser = userService.findOne(username);
+        loyaltyUser.setPoints(4);
+        userService.updateLoyaltyCardReq("APPROVED", username);
+        userService.update(loyaltyUser);
+
+        response.sendRedirect(bURL + "Korisnici/LoyaltyZahtevi");
+    }
+
+    @PostMapping(value = "/Odbij")
+    public void disapproveComment(@RequestParam String username, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        User user = (User) request.getSession().getAttribute(UserController.USER_KEY);
+        if (user == null) {
+            response.sendRedirect(bURL);
+            return;
+        }
+        userService.updateLoyaltyCardReq("NOTAPPROVED", username);
+        response.sendRedirect(bURL + "Korisnici/LoyaltyZahtevi");
     }
 }

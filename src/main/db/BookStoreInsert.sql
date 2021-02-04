@@ -12,10 +12,10 @@ INSERT INTO books VALUES
 
 
 INSERT INTO users VALUES
-	("boris", "1234", "bong@gmail.com", "Boris", "Jancic", "2000.08.25", "Smederevo", "061 123 123", DATE("2021.10.1"), "ADMIN", 1),
-	("andj", "1234", "andj@gmail.com", "Andjela", "Joksimovic", "2001.04.05", "Smederevo", "061 123 143", DATE("2021.10.1"), "CLIENT", 1),
-	("tadoy", "1234", "tadija@gmail.com", "Tadija", "Marjanovic", "2000.07.11", "Smederevo", "064 123 123", DATE("2021.10.1"), "CLIENT", 1),
-	("kanca", "1234", "kanc@gmail.com", "Katarina", "Ljusic", "2000.06.12", "Smederevo", "061 542 123", DATE("2021.10.1"), "CLIENT", 1),
-    ("rista", "1234", "rista@gmail.com", "Lazar", "Ristic", "2000.03.28", "Smederevo", "069 223 123", DATE("2021.10.1"), "CLIENT", 1);
-    ("goran", "goran", "goran@gmail.com", "Gordana", "Jancic", "1974.12.25", "Smederevo", "069 532 123", DATE("2021.10.1"), "CLIENT", 1);
-    ("goca", "goca", "goca@gmail.com", "Goran", "Jancic", "1969.03.18", "Smederevo", "069 421 123", DATE("2021.10.1"), "CLIENT", 1);
+	("boris", "1234", "bong@gmail.com", "Boris", "Jancic", "2000.08.25", "Smederevo", "061 123 123", DATE("2021.10.1"), "ADMIN", 1, 'NOTAPPROVED', 0),
+	("andj", "1234", "andj@gmail.com", "Andjela", "Joksimovic", "2001.04.05", "Smederevo", "061 123 143", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0),
+	("tadoy", "1234", "tadija@gmail.com", "Tadija", "Marjanovic", "2000.07.11", "Smederevo", "064 123 123", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0),
+	("kanca", "1234", "kanc@gmail.com", "Katarina", "Ljusic", "2000.06.12", "Smederevo", "061 542 123", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0),
+    ("rista", "1234", "rista@gmail.com", "Lazar", "Ristic", "2000.03.28", "Smederevo", "069 223 123", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0),
+    ("goran", "goran", "goran@gmail.com", "Gordana", "Jancic", "1974.12.25", "Smederevo", "069 532 123", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0),
+    ("goca", "goca", "goca@gmail.com", "Goran", "Jancic", "1969.03.18", "Smederevo", "069 421 123", DATE("2021.10.1"), "CLIENT", 1, 'NOTAPPROVED', 0);

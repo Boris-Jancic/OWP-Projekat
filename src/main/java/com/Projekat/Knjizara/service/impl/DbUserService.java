@@ -30,22 +30,20 @@ public class DbUserService implements UserService {
     }
 
     @Override
-    public List<User> find(String username) {
-        return userDao.find(username);
-    }
+    public List<User> loyaltyCardReq() { return userDao.loyaltyCardReq(); }
 
     @Override
-    public void save(User user) {
-        userDao.save(user);
-    }
+    public void updateLoyaltyCardReq(String request, String username) { userDao.updateLoyaltyCardReq(request, username); }
 
     @Override
-    public void update(User user) {
-        userDao.update(user);
-    }
+    public List<User> find(String username) { return userDao.find(username); }
 
     @Override
-    public void block(String username, boolean blocked) {
-        userDao.block(username, blocked);
-    }
+    public void save(User user) { userDao.save(user); }
+
+    @Override
+    public void update(User user) { userDao.update(user); }
+
+    @Override
+    public void block(String username, boolean blocked) { userDao.block(username, blocked); }
 }

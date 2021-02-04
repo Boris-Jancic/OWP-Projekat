@@ -13,6 +13,10 @@ public interface UserService {
 
     List<User> findAll();
 
+    public List<User> loyaltyCardReq();
+
+    public void updateLoyaltyCardReq(String request, String username);
+
     List<User> find(String username);
 
     void save(User user);

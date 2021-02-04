@@ -62,7 +62,7 @@
                             <td class="cart-item-text" th:text="${cartBook.numOfCopies}"></td>
                             <td class="cart-item-text" th:text="${cartBook.price}"></td>
                             <td class="float-right">
-                                <form method="post" action="IzbaciIzKorpe"> bn
+                                <form method="post" action="IzbaciIzKorpe">
                                     <input type="hidden" name="id" th:value="${cartBook.id}">
                                     <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Izbaci knjigu">
                                 </form>
@@ -71,11 +71,13 @@
                     </div>
                 </tbody>
 
-                </th>
+                <tr>
                     <th colspan="3"></th>
+                    <th th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Trenutno imaete ' + user.points + ' poen(a), Unesi broj poena => '}"></th>
                     <form method="post" action="Kupi">
-                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="submit" value="Kupi"/></th>
+                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="number" name="points" value="0" min="0" th:max="${user.points}"/></th>
                         <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right"  th:text="${'Ukupna cena: ' + finalPrice}"></th>
+                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="submit" value="Kupi"/></th>
                     </form>
                 </tr>
             </table>
