@@ -80,25 +80,43 @@ public class TransactionController {
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
         int finalPrice = 0;
+        boolean sale = false;
+
         for (BoughtBook bB : boughtBooks) {
-            finalPrice += bB.getPrice();
+            Discount specificDiscount = bookService.checkIfDiscountSpecific(bB.getBook().getIsbn());
+            if (specificDiscount == null) {
+                finalPrice += bB.getPrice();
+            } else {
+                float discount = (float) ((float) specificDiscount.getDiscount() * 0.01);
+                float discountBook = bB.getPrice() - (bB.getPrice() * discount);
+                finalPrice += discountBook;
+                sale = true;
+            }
+        }
+
+        Discount allDiscount = bookService.checkIfDiscountAll();
+        if (allDiscount != null) {
+            float discount = (float) ((float) allDiscount.getDiscount() * 0.01);
+            finalPrice -= (finalPrice * discount);
+            sale = true;
         }
 
         ModelAndView result = new ModelAndView("cartPage");
         result.addObject("cartBooks", boughtBooks);
         result.addObject("user", loggedUser);
+        result.addObject("sale", sale);
         result.addObject("finalPrice", finalPrice);
         return result;
     }
 
-    @GetMapping(value = "/DodajUKorpu")
-    public ModelAndView addToCart(@RequestParam String isbn, int wantedCopies,
+    @PostMapping(value = "/DodajUKorpu")
+    public void addToCart(@RequestParam String isbn, int wantedCopies,
                                   HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         if (loggedUser == null) {
             response.sendRedirect(bURL);
-            return null;
+            return;
         }
 
         if (session.getAttribute(SHOPPING_CART_KEY) == null) {
@@ -118,16 +136,7 @@ public class TransactionController {
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
         boughtBooks.add(boughtBook);
 
-        int finalPrice = 0;
-        for (BoughtBook bB : boughtBooks) {
-            finalPrice += bB.getPrice();
-        }
-
-        ModelAndView result = new ModelAndView("cartPage");
-        result.addObject("cartBooks", boughtBooks);
-        result.addObject("user", loggedUser);
-        result.addObject("finalPrice", finalPrice);
-        return result;
+        response.sendRedirect(bURL + "Kupovina/Korpa");
     }
 
     @PostMapping(value = "/IzbaciIzKorpe")
@@ -165,7 +174,7 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/Kupi")
-    public void buy(int points, HttpServletResponse response) throws IOException {
+    public void buy(int points, float finalPrice, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         if (loggedUser == null) {
@@ -173,15 +182,13 @@ public class TransactionController {
             return;
         }
 
-        String receiptID = randomAlphanumeric(9);
-
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         String dateOfPurchase = dtf.format(now);
+        String receiptID = randomAlphanumeric(9);
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
 
-        float finalPrice = 0;
         int numOfCopies = 0;
 
         for (BoughtBook bB : boughtBooks) {
@@ -199,12 +206,12 @@ public class TransactionController {
             boughtBookService.save(bB);
 
             numOfCopies += bB.getNumOfCopies();
-            finalPrice += bB.getPrice();
         }
 
         if (points > 0) {
+            loggedUser.setPoints(loggedUser.getPoints() - points);
             float discount = (float) ((float) points * 0.05);
-            finalPrice = finalPrice - (finalPrice * discount);
+            finalPrice = (finalPrice - (finalPrice * discount));
         }
 
         Receipt receipt = new Receipt();
@@ -215,7 +222,7 @@ public class TransactionController {
         receipt.setNumberOfBooksBought(numOfCopies);
         receipt.setFinalPrice(finalPrice);
 
-        int aquiredPoints = (int) finalPrice / 1000;
+        int aquiredPoints = (int) finalPrice / 999;
 
         if (aquiredPoints + loggedUser.getPoints() > 10) {
             loggedUser.setPoints(10);

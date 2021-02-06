@@ -97,10 +97,18 @@
 
                 <tr>
                     <th colspan="2"></th>
-                    <th th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Trenutno imaete ' + user.points + ' poen(a), Unesi broj poena => '}"></th>
                     <form method="post" action="Kupi">
-                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="number" name="points" value="0" min="0" th:max="${user.points}"/></th>
-                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right"  th:text="${'Ukupna cena: ' + finalPrice}"></th>
+
+                        <div th:if="${sale == false}">
+                            <th th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Trenutno imaete ' + user.points + ' poen(a), Unesi broj poena => '}"></th>
+                            <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="number" name="points" value="0" min="0" th:max="${user.points}"/></th>
+                        </div>
+                        <div th:if="${sale == true}">
+                            <input type="hidden" name="points" th:value="0">
+                            <th colspan="2" th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Akcija je u toku, poeni su ukinuti !'}"></th>
+                        </div>
+                        <input type="hidden" name="finalPrice" th:value="${finalPrice}">
+                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right" th:text="${'Ukupna cena: ' + finalPrice}"></th>
                         <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="submit" value="Kupi"/></th>
                     </form>
                 </tr>

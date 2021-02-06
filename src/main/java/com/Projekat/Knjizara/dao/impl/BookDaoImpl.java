@@ -250,13 +250,22 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Discount checkIfDiscountAll() {
         String sql = "SELECT * FROM discounts WHERE CURDATE() between startDisc and endDisc and isbn like '0000000000000'";
-        return jdbcTemplate.queryForObject(sql, new DiscountRowMapper());
+        List<Discount> discounts = jdbcTemplate.query(sql, new DiscountRowMapper());
+        for (Discount discount : discounts) {
+            if (discount != null)
+                return discount;
+        }
+        return null;
     }
 
     @Override
     public Discount checkIfDiscountSpecific(String isbn) {
         String sql = "SELECT * FROM discounts WHERE CURDATE() between startDisc and endDisc and isbn like ?";
-        return jdbcTemplate.queryForObject(sql, new DiscountRowMapper());
+        List<Discount> discounts = jdbcTemplate.query(sql, new DiscountRowMapper(), isbn);
+        for (Discount discount : discounts) {
+            if (discount != null)
+                return discount;
+        }
+        return null;
     }
-
 }
