@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -16,8 +19,14 @@ import java.util.Date;
 @Builder
 public class Comment {
     private String id;
+
+    @NotBlank
     private String text;
-    private float rating;
+
+    @Min(1)
+    @Max(5)
+    private int rating;
+
     private String dateOfComment;
     private User author;
     private Book book;

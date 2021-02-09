@@ -65,20 +65,45 @@
         </div>
     </nav>
 
-    <div>
+    <div th:if="${comment == null}">
         <div class="create-container">
             <h3>Oceni knjigu</h3>
             <form method="post" th:action="@{ObjaviRecenziju}">
                 <table class="forma">
                     <tr>
                         <input type="hidden" name="isbn" th:value="${book}"/>
-                        <td>Unesite komentar : </td><td><textarea type="textarea" name="text"></textarea></td>
+                        <td>Unesite komentar : </td>
+                        <td><textarea type="textarea" class="form-control" name="text"></textarea></td>
                     </tr>
                     <tr>
-                        <td>Ocena : </td><td><input type="number" min="1" max="5" name="grade"/></td>
+                        <td>Ocena : </td>
+                        <td><input type="number" class="form-control" min="1" max="5" name="rating"/></td>
                     </tr>
 
-                    <tr><td></td><td><input type="submit" class="btnSubmit" value="Ostavi recenziju"/></td></tr>
+                    <tr><td></td><td><input type="submit" class="form-control btnSubmit" value="Ostavi recenziju"/></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${comment != null}">
+        <div class="create-container">
+            <h3>Oceni knjigu</h3>
+            <form method="post" th:action="@{ObjaviRecenziju}">
+                <table class="forma">
+                    <tr>
+                        <input type="hidden" name="isbn" th:value="${book}"/>
+                        <td>Unesite komentar : </td>
+                        <td><textarea type="textarea" class="form-control" name="text"></textarea></td>
+                        <td><b colspan="2" th:if="${#fields.hasErrors('comment.text')}">Prazno polje</b></td>
+                    </tr>
+                    <tr>
+                        <td>Ocena : </td>
+                        <td><input type="number" min="1" max="5" class="form-control" name="rating"/></td>
+                        <td><b colspan="2" th:if="${#fields.hasErrors('comment.rating')}">Pogresno uneta ocena</b></td>
+                    </tr>
+
+                    <tr><td></td><td><input type="submit" class="form-control btnSubmit" value="Ostavi recenziju"/></td></tr>
                 </table>
             </form>
         </div>

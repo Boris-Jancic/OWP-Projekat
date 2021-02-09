@@ -65,7 +65,16 @@ CREATE TABLE comments
 	author VARCHAR(30) NOT NULL,
 	text VARCHAR(300) NOT NULL,
 	book VARCHAR(13) NOT NULL,
-	grade float NOT NULL,
+	grade int NOT NULL,
 	dateOfComment DATE NOT NULL,
     status VARCHAR(30)
+);
+
+CREATE TABLE discounts
+(
+    id VARCHAR(10) NOT NULL PRIMARY KEY,
+    discount int NOT NULL,
+    startDisc DATE NOT NULL,
+    endDisc DATE NOT NULL,
+    isbn VARCHAR(13) NOT NULL
 );

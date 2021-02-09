@@ -56,7 +56,7 @@
         </div>
     </nav>
 
-    <div>
+    <div th:if="${discount == null}">
         <div class="create-container">
             <h3>Objavi datum akcije</h3>
             <form method="post" action="ObjaviAkciju">
@@ -64,13 +64,45 @@
                     <tr>
                         <input type="hidden" name="id" value="00000000"/>
                         <input type="hidden" name="book" th:value="${isbn}"/>
-                        <th>Unesite popust (od 1 - 100) : </th><td><input type="number" name="discount" min="0" max="100"></input></td>
+                        <th>Unesite popust (od 1 - 100) : </th>
+                        <td><input type="number" name="discount" class="form-control btnSubmit" min="0" max="100"></td>
                     </tr>
                     <tr>
-                        <th>Pocetak akcije : </th><td><input type="date" name="start"/></td>
+                        <th>Pocetak akcije : </th><td>
+                        <input type="date" class="form-control btnSubmit" name="start"/></td>
                     </tr>
                     <tr>
-                        <th>Kraj akcije : </th><td><input type="date" name="end"/></td>
+                        <th>Kraj akcije : </th><td>
+                        <input type="date" class="form-control btnSubmit" name="end"/></td>
+                    </tr>
+
+                    <tr><th></th><td><input type="submit" class="form-control btnSubmit" value="Objavi akciju !"/></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${discount != null}">
+        <div class="create-container">
+            <h3>Objavi datum akcije</h3>
+            <form method="post" action="ObjaviAkciju">
+                <table class="forma">
+                    <tr>
+                        <input type="hidden" name="id" value="00000000"/>
+                        <input type="hidden" name="book" th:value="${isbn}"/>
+                        <th>Unesite popust (od 1 - 100) : </th>
+                        <td><input type="number" name="discount" min="0" max="100" class="form-control" th:field="*{discount.discount}"></td>
+                        <td><b colspan="2" th:if="${#fields.hasErrors('discount.discount')}">Pogresno unet popust</b></td>
+                    </tr>
+                    <tr>
+                        <th>Pocetak akcije : </th>
+                        <td><input type="date" name="start" class="form-control" th:field="*{discount.start}"/></td>
+                        <td><b colspan="2" th:if="${#fields.hasErrors('discount.start')}">Pogresno unet datum</b></td>
+                    </tr>
+                    <tr>
+                        <th>Kraj akcije : </th>
+                        <td><input type="date" name="end" class="form-control" th:field="*{discount.end}"/></td>
+                        <td><b colspan="2" th:if="${#fields.hasErrors('discount.end')}">Pogresno datum</b></td>
                     </tr>
 
                     <tr><th></th><td><input type="submit" class="form-control btnSubmit" value="Objavi akciju !"/></td></tr>

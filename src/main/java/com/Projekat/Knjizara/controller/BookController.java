@@ -295,31 +295,35 @@ public class BookController {
     }
 
     @PostMapping(value = "/ObjaviRecenziju")
-    public void sendCommentReq(@RequestParam String isbn, @RequestParam String text, @RequestParam float grade,
+    public ModelAndView sendCommentReq(@Valid Comment comment, BindingResult bindingResult, @RequestParam String isbn,
                                HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
         if (loggedUser == null) {
             response.sendRedirect(bURL);
-            return;
+            return null;
         }
 
-        String commentID = randomAlphanumeric(9);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         String dateOfComment = dtf.format(now);
 
-        Comment newComment = new Comment();
-        newComment.setId(commentID);
-        newComment.setAuthor(loggedUser);
-        newComment.setText(text);
-        newComment.setBook(bookService.findOne(isbn));
-        newComment.setRating(grade);
-        newComment.setDateOfComment(dateOfComment);
-        newComment.setStatus(EStatus.WAITING);
+        comment.setId(randomAlphanumeric(9));
+        comment.setAuthor(loggedUser);
+        comment.setBook(bookService.findOne(isbn));
+        comment.setDateOfComment(dateOfComment);
+        comment.setStatus(EStatus.WAITING);
 
-        commentService.saveComment(newComment);
+        if (bindingResult.hasErrors()) {
+            ModelAndView error = new ModelAndView("rateBook");
+            error.addObject("user", loggedUser);
+            error.addObject("book", isbn);
+            return error;
+        }
+
+        commentService.saveComment(comment);
         response.sendRedirect(bURL + "Knjige/Detalji?isbn=" + isbn);
+        return null;
     }
 }

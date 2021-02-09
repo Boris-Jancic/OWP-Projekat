@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Date;
 
 @Data
@@ -15,6 +18,10 @@ import java.util.Date;
 @Builder
 public class Discount {
     private String id;
+
+    @NotNull
+    @Min(1)
+    @Max(100)
     private int discount;
 
     @NotNull

@@ -92,16 +92,16 @@
 
             <form method="get" action="Naruci" th:if="${user.isAdmin()}">
                 <input type="hidden" name="isbn" th:value="${book.isbn}">
-                <p>Broj primeraka :<input type="number" name="wantedCopies" value="0"><br>
-                    <input type="submit" class="btnSubmit fadeIn fourth" value="Naruci dodatne primerke">
+                <p>Broj primeraka :<input colspan="1" type="number" name="wantedCopies" value="0" min="0"><br>
+                    <input colspan="1" type="submit" class="btnSubmit fadeIn fourth" value="Naruci dodatne primerke">
                 </p>
             </form>
 
             <form method="post" action="../Kupovina/DodajUKorpu" th:if="!${user.isAdmin()}">
                 <input type="hidden" name="isbn" th:value="${book.isbn}">
                 <p>
-                    Broj primeraka :<input type="number" name="wantedCopies" value="0" min="0"  th:max="${book.remaining}"><br>
-                    <input type="submit" class="btnSubmit fadeIn fourth" value="Dodaj u korpu">
+                    Broj primeraka :<input colspan="1" type="number" name="wantedCopies" value="0" min="0"  th:max="${book.remaining}"><br>
+                    <input colspan="1" type="submit" class="btnSubmit fadeIn fourth" value="Dodaj u korpu">
                 </p>
             </form>
 

@@ -344,17 +344,25 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/ObjaviAkciju")
-    public void addAction(@Valid Discount discount, BindingResult bindingResult, HttpServletResponse response) throws IOException {
+    public ModelAndView addAction(@Valid Discount discount, BindingResult bindingResult, HttpServletResponse response) throws IOException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         if (loggedUser == null) {
             response.sendRedirect(bURL);
-            return;
+            return null;
         }
 
         discount.setId(randomAlphanumeric(9));
-        bookService.addDiscount(discount);
 
+        if (bindingResult.hasErrors()) {
+            ModelAndView error = new ModelAndView("addDiscount");
+            error.addObject("isbn", discount.getBook());
+            error.addObject("user", loggedUser);
+            return error;
+        }
+
+        bookService.addDiscount(discount);
         response.sendRedirect(bURL + "Knjige");
+        return null;
     }
 }

@@ -41,7 +41,7 @@ public class CommentDaoImpl implements CommentDao {
             User author = userService.findOne(rs.getString(index++));
             String text = rs.getString(index++);
             Book book = bookService.findOne(rs.getString(index++));
-            float grade = rs.getFloat(index++);
+            int grade = rs.getInt(index++);
             String dateOfComment = rs.getString(index++);
             String status = rs.getString(index++);
 
