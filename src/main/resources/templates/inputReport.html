@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjizara</title>
+</head>
+<body>
+<div th:fragment="centralDiv">
+
+    <link href="../css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="title navbar-brand" href="#">Knjigerino</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../Knjige/TabelaKnjiga" th:text="#{bookStore.bookTable}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj" th:text="#{bookStore.addBook}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/" th:text="#{bookStore.users}"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi" th:text="#{bookStore.loyaltyCard}">></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/" th:text="#{bookStore.comments}"></a>
+                </li>
+                <li class="nav-item dropdown float-right">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                        <i><b>PROFIL</b></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <p th:text="${'Ulogovan je: ' + user.userName}"></p>
+                        <p th:text="${'Tip : ' + user.userType}"></p>
+                        <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
+                        <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
+                        <form method="post" th:if="!${user.isAdmin()}" action="../Kupovina/LoyaltyReq">
+                            <input th:if="!${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" type="submit"
+                                   class="form-control btnSubmit fadeIn fourth" value="Posalji zahtev za bonus karticu">
+                        </form>
+                        <div class="dropdown-divider"></div>
+                        <a href="../Korisnici/Logout">Odjavi se</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="create-container">
+        <h3 th:text="#{bookStore.report}"></h3>
+        <form method="post" action="Izvestaj">
+            <table class="forma">
+                <tr>
+                    <th th:text="#{bookStore.from}"></th>
+                    <td><input type="date" class="form-control btnSubmit" name="from"/></td>
+                </tr>
+                <tr>
+                    <th th:text="#{bookStore.to}"></th>
+                    <td><input type="date" class="form-control btnSubmit" name="to"/></td>
+                </tr>
+                <tr><th></th><td><input type="submit" class="form-control btnSubmit" th:value="#{bookStore.search}"/></td></tr>
+            </table>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

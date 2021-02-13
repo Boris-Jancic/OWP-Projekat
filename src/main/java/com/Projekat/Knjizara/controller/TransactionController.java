@@ -13,17 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
@@ -174,17 +173,14 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/Kupi")
-    public void buy(int points, float finalPrice, HttpServletResponse response) throws IOException {
+    public void buy(int points, float finalPrice, HttpServletResponse response) throws IOException, ParseException {
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         if (loggedUser == null) {
             response.sendRedirect(bURL);
             return;
         }
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        String dateOfPurchase = dtf.format(now);
+        Date today = Date.valueOf(LocalDate.now());
         String receiptID = randomAlphanumeric(9);
 
         ArrayList<BoughtBook> boughtBooks = (ArrayList<BoughtBook>) session.getAttribute(SHOPPING_CART_KEY);
@@ -218,7 +214,7 @@ public class TransactionController {
         receipt.setId(receiptID);
         receipt.setBoughtBooks(boughtBooks);
         receipt.setClient(loggedUser);
-        receipt.setDateOfPurchase(dateOfPurchase);
+        receipt.setDateOfPurchase(today);
         receipt.setNumberOfBooksBought(numOfCopies);
         receipt.setFinalPrice(finalPrice);
 
@@ -364,5 +360,38 @@ public class TransactionController {
         bookService.addDiscount(discount);
         response.sendRedirect(bURL + "Knjige");
         return null;
+    }
+
+    @GetMapping(value = "/Izvestaj")
+    public ModelAndView addAction(HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        ModelAndView result = new ModelAndView("inputReport");
+        result.addObject("report", true);
+        result.addObject("user", loggedUser);
+        return result;
+    }
+
+    @PostMapping(value = "/Izvestaj")
+    public ModelAndView addAction(@RequestParam(required = false) Date from, @RequestParam(required = false) Date to,
+                                  HttpServletResponse response) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        List<Report> reportBooks = boughtBookService.report(from, to);
+
+        ModelAndView result = new ModelAndView("reportPage");
+        result.addObject("reportBooks", reportBooks);
+        result.addObject("user", loggedUser);
+        return result;
     }
 }
