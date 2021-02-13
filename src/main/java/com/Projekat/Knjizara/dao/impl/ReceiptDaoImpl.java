@@ -13,8 +13,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -37,7 +40,7 @@ public class ReceiptDaoImpl implements ReceiptDao {
             int index = 1;
 
             String id = rs.getString(index++);
-            String dateOfPurchase = rs.getString(index++);
+            Date dateOfPurchase = rs.getDate(index++);
             User client = userService.findOne(rs.getString(index++));
             List<BoughtBook> boughtBooks = boughtBookService.findBoughtBooksOnReceipt(id);
             int numOfCopies = rs.getInt(index++);

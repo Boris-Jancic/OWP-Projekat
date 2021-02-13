@@ -3,6 +3,7 @@ package com.Projekat.Knjizara.dao.impl;
 import com.Projekat.Knjizara.dao.BoughtBookDao;
 import com.Projekat.Knjizara.models.Book;
 import com.Projekat.Knjizara.models.BoughtBook;
+import com.Projekat.Knjizara.models.Report;
 import com.Projekat.Knjizara.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -50,6 +52,28 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
         }
     }
 
+    private class ReportRowMapper implements RowMapper<Report> {
+
+        @Override
+        public Report mapRow(ResultSet rs, int i) throws SQLException {
+            int index = 1;
+
+            String name = rs.getString(index++);
+            String author = rs.getString(index++);
+            float price = rs.getFloat(index++);
+            int numOfCopies = rs.getInt(index++);
+
+            Report report = new Report();
+
+            report.setName(name);
+            report.setAuthor(author);
+            report.setPrice(price);
+            report.setNumOfCopies(numOfCopies);
+
+            return report;
+        }
+    }
+
     @Override
     public BoughtBook findOne(String id) {
         try {
@@ -71,6 +95,18 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
     public List<BoughtBook> findAll() {
         String sql = "SELECT * FROM boughtBooks";
         return jdbcTemplate.query(sql, new BoughtBookRowMapper());
+    }
+
+    @Override
+    public List<Report> report(Date from, Date to) {
+        String sql = "SELECT b.name, b.author, COUNT(b.name), SUM(b.price) \n" +
+                    " FROM boughtBooks bb LEFT JOIN books b\n" +
+                    " ON bb.book = b.isbn LEFT JOIN receipts r\n" +
+                    " ON bb.idReceipt = r.id\n" +
+                    " WHERE bb.idReceipt = r.id AND r.dateOfPurchase between ? and ?" +
+                    " GROUP BY b.name, b.author";
+        return jdbcTemplate.query(sql, new ReportRowMapper(), from, to);
+
     }
 
     @Override

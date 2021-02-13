@@ -125,7 +125,7 @@ public class UserDaoImpl implements UserDao {
     public void save(User user) {
         String sql = "INSERT INTO users (username, password, email, name, lastName, dateOfBirth, address, phone," +
                                         " dateOfRegistration, userType, active, status, points) " +
-                "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getEmail(), user.getName(),
                 user.getLastName(), user.getDateOfBirth(), user.getAddress(), user.getPhone(), user.getDateOfRegistration(),
                 user.getUserType().toString(), user.isActive(), "NOTAPPROVED", 0);

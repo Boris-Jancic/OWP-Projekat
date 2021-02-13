@@ -1,16 +1,14 @@
 package com.Projekat.Knjizara.service.impl;
 
 import com.Projekat.Knjizara.dao.BoughtBookDao;
-import com.Projekat.Knjizara.dao.impl.BoughtBookDaoImpl;
 import com.Projekat.Knjizara.models.BoughtBook;
+import com.Projekat.Knjizara.models.Report;
 import com.Projekat.Knjizara.service.BoughtBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Random;
-
-import static org.thymeleaf.util.StringUtils.randomAlphanumeric;
 
 @Service
 public class DbBoughtBookService implements BoughtBookService {
@@ -32,6 +30,9 @@ public class DbBoughtBookService implements BoughtBookService {
     public List<BoughtBook> findAll() {
         return boughtBookDao.findAll();
     }
+
+    @Override
+    public List<Report> report(Date from, Date to) { return boughtBookDao.report(from, to); }
 
     @Override
     public void save(BoughtBook boughtBook) {
