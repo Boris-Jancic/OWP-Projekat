@@ -117,7 +117,7 @@ public class UserController {
             System.out.println("Ulogovan je : " + loggedUser.getUserName());
             session.setAttribute(UserController.USER_KEY, loggedUser);
 
-            response.sendRedirect(bURL + "Knjige");
+            response.sendRedirect(bURL + "Knjige/?locale=sr");
             return null;
         } catch (Exception ex) {
             // ispis greške

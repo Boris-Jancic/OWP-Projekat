@@ -14,26 +14,26 @@
         <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="title navbar-brand" href="../Knjige">Knjigerino</a>
+            <a class="title navbar-brand" href="#">Knjigerino</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                        <a class="nav-link" href="../Knjige/TabelaKnjiga" th:text="#{bookStore.bookTable}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj" th:text="#{bookStore.addBook}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/">Pregled korisnika</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/" th:text="#{bookStore.users}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="LoyaltyZahtevi">Odobravanje loyalty kartica</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="LoyaltyZahtevi" th:text="#{bookStore.loyaltyCard}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/">Odobravanje komentara</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/" th:text="#{bookStore.comments}"></a>
                     </li>
                     <li class="nav-item dropdown float-right">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -87,11 +87,11 @@
                 <table class="table table-sm table-dark">
                     <thead>
                     <tr>
-                        <th>ID kupovine</th>
-                        <th>Datum tranzakcije</th>
-                        <th>Ukupan broj knjiga</th>
-                        <th>Ukupna cena</th>
-                        <th>Pregled</th>
+                        <th>ID</th>
+                        <th th:text="#{bookStore.dateOfTransaction}"></th>
+                        <th th:text="#{bookStore.numOfCopies}"></th>
+                        <th th:text="#{bookStore.finalPrice}"></th>
+                        <th th:text="#{bookStore.view}"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -104,7 +104,7 @@
                             <td>
                                 <form method="get" action="../Kupovina/DetaljiKupovine">
                                     <input type="hidden" name="receiptID" th:value="${itReceipt.id}">
-                                    <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Pregled Kupovine">
+                                    <input type="submit" class="form-control btnSubmit fadeIn fourth" th:value="#{bookStore.viewReceipt}">
                                 </form>
                             </td>
                         </tr>

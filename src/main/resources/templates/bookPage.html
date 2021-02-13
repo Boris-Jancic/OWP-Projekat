@@ -6,81 +6,93 @@
 </head>
 <body>
     <div th:fragment="centralDiv">
-        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" th:href="@{/css/style.css}"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <script th:src="@{/js/localization.js}"></script>
+
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="title navbar-brand" href="Knjige">Knjigerino</a>
+            <a class="title navbar-brand" href="#">Knjigerino</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                        <a class="nav-link" href="TabelaKnjiga" th:text="#{bookStore.bookTable}">Tabelarni pregled</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="Knjige/Dodaj">Dodaj knjigu</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj" th:text="#{bookStore.addBook}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="Korisnici/">Pregled korisnika</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/" th:text="#{bookStore.users}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="Korisnici/LoyaltyZahtevi">Odobravanje loyalty kartica</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi" th:text="#{bookStore.loyaltyCard}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="Komentari/">Odobravanje komentara</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/" th:text="#{bookStore.comments}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Kupovina/Korpa">Korpa</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Kupovina/Izvestaj" th:text="#{bookStore.report}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Kupovina/IstorijaKupovine">Istorija kupovina</a>
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa" th:text="#{bookStore.cart}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="!${user.isAdmin()}" href="Kupovina/ListaZelja">Lista zelja</a>
-                    </li>
-                    <li class="nav-item dropdown float-right">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            <i><b>PROFIL</b></i>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <p th:text="${'Ulogovan je: ' + user.userName}"></p>
-                            <p th:text="${'Tip : ' + user.userType}"></p>
-                            <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
-                            <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
-                            <form method="post" th:if="!${user.isAdmin()}" action="Kupovina/LoyaltyReq">
-                                <input th:if="!${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" type="submit"
-                                       class="form-control btnSubmit fadeIn fourth" value="Posalji zahtev za bonus karticu">
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <a href="Korisnici/Logout">Odjavi se</a>
-                        </div>
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine" th:text="#{bookStore.history}"></a>
                     </li>
                     <li class="nav-item">
-                        <form th:if="${user.isAdmin()}" method="get" action="Kupovina/DodajAkciju">
-                            <input type="hidden" name="isbn" value="0000000000000">
-                            <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Objavi akciju">
-                        </form>
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja" th:text="#{bookStore.wishList}"></a>
+                    </li>
+                    <li class="nav-item float-right nav-link">
+                        <p><b th:text="${user.userName}"></b></p>
+                    </li>
+                    <li class="nav-item float-right nav-link">
+                        <p><i th:text="${user.userType}"></i></p>
+                    </li>
+                    <li class="nav-item nav-link" th:if="${user.isAdmin()}">
+                        <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
+                    </li>
+                    <li class="nav-item nav-link" th:if="${user.isAdmin()}">
+                        <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
+                    </li>
+                    <li class="nav-item nav-link">
+                        <a class="nav-link" href="../Korisnici/Logout">Odjavi se</a>
+                    </li>
+                    <li class="nav-item">
+                        <select id="locales" name="locales" class="form-control">
+                            <option value="en" th:text="#{lang.eng}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+                            <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+                        </select>
                     </li>
                 </ul>
             </div>
         </nav>
 
-        <form action="Knjige/Pretraga">
+        <form th:if="${user.isAdmin()}" method="get" action="../Kupovina/DodajAkciju">
+            <input type="hidden" name="isbn" value="0000000000000">
+            <input type="submit" class="form-control btnSubmit fadeIn fourth" th:value="#{bookStore.discountTitle}">
+        </form>
+        <form th:if="!${user.isAdmin()}" method="post" action="../Kupovina/LoyaltyReq">
+            <input th:if="!${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" type="submit"
+                   class="form-control btnSubmit fadeIn fourth" value="Posalji zahtev za bonus karticu">
+        </form>
+        <br>
+
+        <form action="Pretraga">
             <div class="container">
                 <table class="table table-sm table-dark searchTable">
                     <thead>
                         <tr>
                             <th>ISBN</th>
-                            <th>Naziv knjige</th>
-                            <th>Autor(i)</th>
-                            <th>Jezik</th>
-                            <th>Min cena</th>
-                            <th>Max cena</th>
+                            <th th:text="#{bookStore.bookName}"></th>
+                            <th th:text="#{bookStore.author}"></th>
+                            <th th:text="#{bookStore.language}"></th>
+                            <th>Min:</th>
+                            <th>Max:</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +107,7 @@
                     </tbody>
 
                     </th>
-                        <th colspan="6"><input style="width: 100%;" type="submit" value="Pretraži"/></th>
+                        <th colspan="6"><input style="width: 100%;" type="submit" th:value="#{bookStore.search}"/></th>
                     </tr>
                 </table>
             </div>
@@ -110,15 +122,15 @@
                         <img class="book-cover" th:src="${itBook.picture}">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${itBook.name}"></h5>
-                            <p class="card-text" th:text="${'Autor: ' + itBook.author}"></p>
-                            <p class="card-text" th:text="${'Prosecna ocena: ' + itBook.rating}"></p>
-                            <p class="card-text" th:if="${user.isAdmin()}" th:text="${'Preostalo : ' + itBook.remaining}"></p>
-                            <h6 th:text="${'Cena: ' + itBook.price}"></h6>
+                            <p class="card-text" th:text="#{bookStore.author} + ${itBook.author}"></p>
+                            <p class="card-text" th:text="#{bookStore.grade} + ${itBook.rating}"></p>
+                            <p class="card-text" th:if="${user.isAdmin()}" th:text="#{bookStore.remaining} + ${itBook.remaining}"></p>
+                            <h6 th:text="#{bookStore.price} + ${itBook.price}"></h6>
 
-                            <form method="get" action="Knjige/Detalji">
+                            <form method="get" action="Detalji">
                                 <input type="hidden" name="isbn" th:value="${itBook.isbn}">
                                 <br>
-                                <input type="submit" class="btnSubmit fadeIn fourth" value="Pregled knjige">
+                                <input type="submit" class="btnSubmit fadeIn fourth" th:value="#{bookStore.viewBook}">
                             </form>
                         </div>
                     </div>

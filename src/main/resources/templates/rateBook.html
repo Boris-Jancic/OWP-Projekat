@@ -14,35 +14,23 @@
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="title navbar-brand" href="../Knjige">Knjigerino</a>
+        <a class="title navbar-brand" href="#">Knjigerino</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
+                    <a class="nav-link" href="../Knjige/TabelaKnjiga" th:text="#{bookStore.bookTable}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa" th:text="#{bookStore.cart}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/">Pregled korisnika</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine" th:text="#{bookStore.history}"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi">Odobravanje loyalty kartica</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/">Odobravanje komentara</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa">Korpa</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine">Istorija kupovina</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja">Lista zelja</a>
+                    <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja" th:text="#{bookStore.wishList}"></a>
                 </li>
                 <li class="nav-item dropdown float-right">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -67,16 +55,16 @@
 
     <div th:if="${comment == null}">
         <div class="create-container">
-            <h3>Oceni knjigu</h3>
+            <h3 th:text="#{bookStore.leaveComment}"></h3>
             <form method="post" th:action="@{ObjaviRecenziju}">
                 <table class="forma">
                     <tr>
                         <input type="hidden" name="isbn" th:value="${book}"/>
-                        <td>Unesite komentar : </td>
+                        <td th:text="#{bookStore.comment}"></td>
                         <td><textarea type="textarea" class="form-control" name="text"></textarea></td>
                     </tr>
                     <tr>
-                        <td>Ocena : </td>
+                        <td th:text="#{bookStore.grade}"></td>
                         <td><input type="number" class="form-control" min="1" max="5" name="rating"/></td>
                     </tr>
 
@@ -88,17 +76,17 @@
 
     <div th:if="${comment != null}">
         <div class="create-container">
-            <h3>Oceni knjigu</h3>
+            <h3 th:text="#{bookStore.leaveComment}"></h3>
             <form method="post" th:action="@{ObjaviRecenziju}">
                 <table class="forma">
                     <tr>
                         <input type="hidden" name="isbn" th:value="${book}"/>
-                        <td>Unesite komentar : </td>
+                        <td th:text="#{bookStore.comment}"></td>
                         <td><textarea type="textarea" class="form-control" name="text"></textarea></td>
                         <td><b colspan="2" th:if="${#fields.hasErrors('comment.text')}">Prazno polje</b></td>
                     </tr>
                     <tr>
-                        <td>Ocena : </td>
+                        <td th:text="#{bookStore.grade}"></td>
                         <td><input type="number" min="1" max="5" class="form-control" name="rating"/></td>
                         <td><b colspan="2" th:if="${#fields.hasErrors('comment.rating')}">Pogresno uneta ocena</b></td>
                     </tr>

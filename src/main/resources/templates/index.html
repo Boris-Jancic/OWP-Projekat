@@ -1,28 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<html lang="en" th:replace="~{::centralDiv}" xmlns:th="http://www.thymeleaf.org">
+<head>    <meta charset="UTF-8">
 
     <title>Knjizara</title>
 </head>
 <body>
+<div th:fragment="centralDiv">
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="webjars/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script th:src="@{js/localization.js}"></script>
+
 
     <div class="container login-container">
         <div class="row">
             <div class="login-form-1">
-                <h1>Knjizara</h1>
-                <h3>Prijava na sistem</h3>
+                <h1 th:text="#{bookStore.title}"></h1>
+                <h3 th:text="#{bookStore.caption}"></h3>
                 <form method="post" action="Korisnici/Login">
-                    <input type="text" id="login" class="fadeIn second" name="username" placeholder="Korisnicko ime" required>
-                    <br>
-                    <input type="password" id="password" class="fadeIn third" name="password" placeholder="Sifra" required>
-                    <br>
-                    <input type="submit" class="btnSubmit fadeIn fourth" value="Log In">
+                    <input type="text" id="login" class="form-control fadeIn second" name="username" th:placeholder="#{bookStore.username}" required>
+                    <input type="password" id="password" class="form-control fadeIn third" name="password" th:placeholder="#{bookStore.password}" required>
+                    <input type="submit" class="form-control btnSubmit fadeIn fourth" th:value="#{bookStore.login}">
                 </form>
-                <br>
-                <a class="link-button" href="Korisnici/Registracija">Registruj se</a>
+                <a class="form-control link-button" href="Korisnici/Registracija" th:text="#{bookStore.register}"></a>
+                <select id="locales" name="locales" class="form-control">
+                    <option value="en" th:text="#{lang.eng}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+                    <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+                </select>
             </div>
         </div>
     </div>

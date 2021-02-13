@@ -6,51 +6,67 @@
 </head>
 <body>
     <div th:fragment="centralDiv">
-
-        <link href="../css/style.css" rel="stylesheet" />
+        <link rel="stylesheet" th:href="@{/css/style.css}"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <script th:src="@{/js/localization.js}"></script>
+
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="title navbar-brand" href="../Knjige">Knjigerino</a>
+            <a class="title navbar-brand" href="../Knjige/">Knjigerino</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="TabelaKnjiga">Tabelarni pregled</a>
+                        <a class="nav-link" href="TabelaKnjiga" th:text="#{bookStore.bookTable}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="Dodaj" th:text="#{bookStore.addBook}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/">Pregled korisnika</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/" th:text="#{bookStore.users}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi">Odobravanje loyalty kartica</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi" th:text="#{bookStore.loyaltyCard}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/">Odobravanje komentara</a>
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/" th:text="#{bookStore.comments}"></a>
                     </li>
-                    <li class="nav-item dropdown float-right">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                            <i><b>PROFIL</b></i>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <p th:text="${'Ulogovan je: ' + user.userName}"></p>
-                            <p th:text="${'Tip : ' + user.userType}"></p>
-                            <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
-                            <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
-                            <form method="post" th:if="!${user.isAdmin()}" action="../Kupovina/LoyaltyReq">
-                                <input th:if="!${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" type="submit"
-                                       class="form-control btnSubmit fadeIn fourth" value="Posalji zahtev za bonus karticu">
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <a href="../Korisnici/Logout">Odjavi se</a>
-                        </div>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Kupovina/Izvestaj" th:text="#{bookStore.report}"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/Korpa" th:text="#{bookStore.cart}"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/IstorijaKupovine" th:text="#{bookStore.history}"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="../Kupovina/ListaZelja" th:text="#{bookStore.wishList}"></a>
+                    </li>
+                    <li class="nav-item float-right nav-link">
+                        <p><b th:text="${user.userName}"></b></p>
+                    </li>
+                    <li class="nav-item float-right nav-link">
+                        <p><i th:text="${user.userType}"></i></p>
+                    </li>
+                    <li class="nav-item nav-link" th:if="${user.isAdmin()}">
+                        <p th:text="${'Loyalty kartica : ' + user.loyaltyCard.toString()}"></p>
+                    </li>
+                    <li class="nav-item nav-link" th:if="${user.isAdmin()}">
+                        <p th:if="${#strings.equals(user.loyaltyCard.toString(), 'APPROVED')}" th:text="${'Broj poena : ' + user.points}"></p>
+                    </li>
+                    <li class="nav-item nav-link">
+                        <a class="nav-link" href="../Korisnici/Logout">Odjavi se</a>
+                    </li>
+                    <li class="nav-item">
+                        <select id="locales" name="locales" class="form-control">
+                            <option value="en" th:text="#{lang.eng}" th:selected="${#strings.equals(#locale.language,'en')}"></option>
+                            <option value="sr" th:text="#{lang.sr}" th:selected="${#strings.equals(#locale.language,'sr')}"></option>
+                        </select>
                     </li>
                 </ul>
             </div>
@@ -58,55 +74,55 @@
 
         <div th:if="${book != null}">
             <div class="create-container">
-                <h3>Dodavanje knjige</h3>
+                <h3 th:text="#{bookStore.addBook}"></h3>
                 <form method="post" th:action="@{Dodaj}">
                     <table class="forma">
                         <tr>
                             <input type="hidden" name="isbn" value="0000000000000"/>
-                            <td>Naziv knjige: </td>
+                            <td th:text="#{bookStore.bookName}"></td>
                             <td><input type="text" name="name" th:field="*{book.name}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.name')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>Izdavacka kuca: </td>
+                            <td th:text="#{bookStore.publisher}"></td>
                             <td><input type="text" name="publisher" th:field="*{book.publisher}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.publisher')}">Prazno polje</b></td>
 
                         </tr>
 
                         <tr>
-                            <td>Autor(i): </td>
+                            <td th:text="#{bookStore.author}"></td>
                             <td><input type="text" name="author" th:field="*{book.author}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.author')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>Datum izdavanja:</td>
+                            <td th:text="#{bookStore.yearOfRelease}"></td>
                             <td><input type="date" name="yearOfRelease" th:field="*{book.yearOfRelease}" /></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.yearOfRelease')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>Opis:</td>
+                            <td th:text="#{bookStore.description}"></td>
                             <td><input type="textarea" name="description" th:field="*{book.description}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.description')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>URL do slike:</td>
+                            <td>URL: </td>
                             <td><input type="text" name="picture" th:field="*{book.picture}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.picture')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>Broj strana:</td>
+                            <td th:text="#{bookStore.numOfPages}"></td>
                             <td><input type="number" name="numOfPages" min="1" th:field="*{book.numOfPages}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.numOfPages')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td> Tip proizvoda </td>
+                            <td th:text="#{bookStore.cover}"></td>
                             <td scope="row">
                                 <select name="cover">
                                     <option value="HARD">HARD</option>
@@ -115,7 +131,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td> Pismo </td>
+                            <td th:text="#{bookStore.letter}"></td>
                             <td scope="row">
                                 <select name="letter">
                                     <option value="LATIN">LATIN</option>
@@ -125,18 +141,18 @@
                         </tr>
 
                         <tr>
-                            <td>Jezik:</td>
+                            <td th:text="#{bookStore.language}"></td>
                             <td><input type="text" name="language" th:field="*{book.language}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.language')}">Prazno polje</b></td>
                         </tr>
 
                         <tr>
-                            <td>Cena:</td>
+                            <td th:text="#{bookStore.price}"></td>
                             <td><input type="number" name="price" min="1" th:field="*{book.price}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('book.price')}">Prazno polje</b></td>
                         </tr>
 
-                        <tr><td></td><td><input type="submit" value="Dodaj"/></td></tr>
+                        <tr><td></td><td><input type="submit" th:value="#{bookStore.add}"/></td></tr>
                     </table>
                 </form>
             </div>
@@ -144,28 +160,40 @@
 
         <div th:if="${book == null}">
             <div class="create-container">
-                <h3>Dodavanje knjige</h3>
+                <h3 th:text="#{bookStore.addBook}"></h3>
                 <form method="post" th:action="@{Dodaj}">
                     <table class="forma">
                         <tr>
                             <input type="hidden" name="isbn" value="0000000000000"/>
-                            <td>Naziv knjige: </td><td><input type="text" name="name"/></td>
+                            <td th:text="#{bookStore.bookName}"></td>
+                            <td><input type="text" name="name"/></td>
                         </tr>
                         <tr>
-                            <td>Izdavacka kuca: </td><td><input type="text" name="publisher"/></td></tr>
+                            <td th:text="#{bookStore.publisher}"></td>
+                            <td><input type="text" name="publisher"/></td></tr>
                         <tr>
-                            <td>Autor(i): </td><td><input type="text" name="author"/></td></tr>
+                            <td th:text="#{bookStore.author}"></td>
+                            <td><input type="text" name="author"/></td>
+                        </tr>
                         <tr>
-                            <td>Datum izdavanja:</td><td><input type="date" name="yearOfRelease"/></td></tr>
+                            <td th:text="#{bookStore.yearOfRelease}"></td>
+                            <td><input type="date" name="yearOfRelease"/></td>
+                        </tr>
                         <tr>
-                            <td>Opis:</td><td><input type="textarea" name="description"/></td></tr>
+                            <td th:text="#{bookStore.description}"></td>
+                            <td><input type="textarea" name="description"/></td>
+                        </tr>
                         <tr>
-                            <td>URL do slike:</td><td><input type="text" name="picture"/></td></tr>
+                            <td>URL:</td>
+                            <td><input type="text" name="picture"/></td>
+                        </tr>
                         <tr>
-                            <td>Broj strana:</td><td><input type="number" name="numOfPages"/></td></tr>
+                            <td th:text="#{bookStore.numOfPages}"></td>
+                            <td><input type="number" name="numOfPages"/></td>
+                        </tr>
 
                         <tr>
-                            <td> Tip proizvoda </td>
+                            <td th:text="#{bookStore.cover}"></td>
                             <td scope="row">
                                 <select name="cover">
                                     <option value="HARD">HARD</option>
@@ -174,7 +202,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td> Pismo </td>
+                            <td th:text="#{bookStore.letter}"></td>
                             <td scope="row">
                                 <select name="letter">
                                     <option value="LATIN">LATIN</option>
@@ -184,13 +212,15 @@
                         </tr>
 
                         <tr>
-                            <td>Jezik:</td><td><input type="text" name="language"/></td>
+                            <td th:text="#{bookStore.language}"></td>
+                            <td><input type="text" name="language"/></td>
                         </tr>
                         <tr>
-                            <td>Cena:</td><td><input type="number" name="price"/></td>
+                            <td th:text="#{bookStore.price}"></td>
+                            <td><input type="number" name="price"/></td>
                         </tr>
 
-                        <tr><td></td><td><input type="submit" class="btnSubmit" value="Dodaj"/></td></tr>
+                        <tr><td></td><td><input type="submit" class="btnSubmit" th:value="#{bookStore.add}"/></td></tr>
                     </table>
                 </form>
             </div>

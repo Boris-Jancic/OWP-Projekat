@@ -12,52 +12,52 @@
 
         <div th:if="${client != null}">
             <div class="create-container">
-                <h1>Registruj se</h1>
+                <h1 th:text="#{bookStore.register}"></h1>
                 <form method="post" th:action="@{Registracija}">
                     <table class="forma">
                         <h6>Negde ste ostavili prazno polje</h6>
                         <tr>
-                            <td>Korisnicko ime: </td>
+                            <td th:text="#{bookStore.username}"></td>
                             <td><input type="text" name="userName" th:field="*{client.userName}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.userName')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Sifra: </td>
+                            <td th:text="#{bookStore.password}"></td>
                             <td><input type="text" name="password" th:field="*{client.password}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.password')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>E-mail: </td>
+                            <td>E-mail</td>
                             <td><input type="email" name="email" th:field="*{client.email}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.email')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Ime: </td>
+                            <td th:text="#{bookStore.name}"></td>
                             <td><input type="text" name="name" th:field="*{client.name}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.name')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Prezime:</td>
+                            <td th:text="#{bookStore.lastName}"></td>
                             <td><input type="text" name="lastName" th:field="*{client.lastName}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.lastName')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Datum rodjenja:</td>
+                            <td th:text="#{bookStore.dateOfBirth}"></td>
                             <td><input type="date" name="dateOfBirth" th:field="*{client.dateOfBirth}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.dateOfBirth')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Adresa:</td>
+                            <td th:text="#{bookStore.address}"></td>
                             <td><input type="text" name="address" th:field="*{client.address}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.address')}">Prazno polje</b></td>
                         </tr>
                         <tr>
-                            <td>Telefon:</td>
+                            <td th:text="#{bookStore.phone}"></td>
                             <td><input type="text" name="phone" th:field="*{client.phone}"/></td>
                             <td><b colspan="2" th:if="${#fields.hasErrors('client.phone')}">Prazno polje</b></td>
                         </tr>
 
-                        <tr><th></th><td><input type="submit" value="Registruj se"/></td></tr>
+                        <tr><th></th><td><input type="submit" th:value="#{bookStore.register}"/></td></tr>
                     </table>
                 </form>
             </div>
@@ -67,35 +67,43 @@
 
         <div th:if="${client == null}">
             <div class="create-container">
-                <h1>Registruj se</h1>
+                <h1 th:text="#{bookStore.register}"></h1>
                 <form method="post" th:action="@{Registracija}">
                     <table class="forma">
                         <tr>
-                            <th>Korisnicko ime: </th><td><input type="text" name="userName"/></td>
+                            <td th:text="#{bookStore.username}"></td>
+                            <td><input type="text" name="userName"/></td>
                         </tr>
                         <tr>
-                            <th>Sifra: </th><td><input type="text" name="password"/></td>
+                            <td th:text="#{bookStore.password}"></td>
+                            <td><input type="text" name="password"/></td>
                         </tr>
                         <tr>
-                            <th>E-mail: </th><td><input type="email" name="email"/></td>
+                            <th>E-mail: </th>
+                            <td><input type="email" name="email"/></td>
                         </tr>
                         <tr>
-                            <th>Ime: </th><td><input type="text" name="name"/></td>
+                            <td th:text="#{bookStore.name}"></td>
+                            <td><input type="text" name="name"/></td>
                         </tr>
                         <tr>
-                            <th>Prezime:</th><td><input type="text" name="lastName"/></td>
+                            <td th:text="#{bookStore.lastName}"></td>
+                            <td><input type="text" name="lastName"/></td>
                         </tr>
                         <tr>
-                            <th>Datum rodjenja:</th><td><input type="date" name="dateOfBirth"/></td>
+                            <td th:text="#{bookStore.dateOfBirth}"></td>
+                            <td><input type="date" name="dateOfBirth"/></td>
                         </tr>
                         <tr>
-                            <th>Adresa:</th><td><input type="text" name="address"/></td>
+                            <td th:text="#{bookStore.address}"></td>
+                            <td><input type="text" name="address"/></td>
                         </tr>
                         <tr>
-                            <th>Telefon:</th><td><input type="text" name="phone"/></td>
+                            <td th:text="#{bookStore.phone}"></td>
+                            <td><input type="text" name="phone"/></td>
                         </tr>
 
-                        <tr><th></th><td><input type="submit" class="btnSubmit" value="Registruj se"/></td></tr>
+                        <tr><th></th><td><input type="submit" class="btnSubmit" th:value="#{bookStore.register}"/></td></tr>
                     </table>
                 </form>
             </div>

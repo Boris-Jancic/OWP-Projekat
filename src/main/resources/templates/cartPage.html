@@ -14,35 +14,23 @@
         <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="title navbar-brand" href="../Knjige">Knjigerino</a>
+            <a class="title navbar-brand" href="#">Knjigerino</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="../Knjige/TabelaKnjiga">Tabelarni pregled</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Knjige/Dodaj">Dodaj knjigu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/">Pregled korisnika</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Korisnici/LoyaltyZahtevi">Odobravanje loyalty kartica</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:if="${user.isAdmin()}" href="../Komentari/">Odobravanje komentara</a>
+                        <a class="nav-link" href="../Knjige/TabelaKnjiga" th:text="#{bookStore.bookTable}"></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:if="!${user.isAdmin()}" href="Korpa">Korpa</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine">Istorija kupovina</a>
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="IstorijaKupovine" th:text="#{bookStore.history}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:if="!${user.isAdmin()}" href="ListaZelja">Lista zelja</a>
+                        <a class="nav-link" th:if="!${user.isAdmin()}" href="ListaZelja" th:text="#{bookStore.wishList}"></a>
                     </li>
                     <li class="nav-item dropdown float-right">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
@@ -66,15 +54,15 @@
         </nav>
 
         <div class="container">
-            <table class="table table-sm table-dark">
+            <table class="table table-dark">
                 <thead>
                 <tr>
-                    <th>Slika</th>
-                    <th>Naziv knjige</th>
-                    <th>Autor</th>
-                    <th>Kolicina primeraka</th>
-                    <th>Cena</th>
-                    <th>Izbaci iz korpe</th>
+                    <th th:text="#{bookStore.bookPicture}"></th>
+                    <th th:text="#{bookStore.bookName}"></th>
+                    <th th:text="#{bookStore.author}"></th>
+                    <th th:text="#{bookStore.numOfCopies}"></th>
+                    <th th:text="#{bookStore.price}"></th>
+                    <th th:text="#{bookStore.removeFromCart}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -88,7 +76,7 @@
                             <td class="float-right">
                                 <form method="post" action="IzbaciIzKorpe">
                                     <input type="hidden" name="id" th:value="${cartBook.id}">
-                                    <input type="submit" class="form-control btnSubmit fadeIn fourth" value="Izbaci knjigu">
+                                    <input type="submit" class="form-control btnSubmit fadeIn fourth" th:value="#{bookStore.removeFromCart}">
                                 </form>
                             </td>
                         </tr>
@@ -100,16 +88,16 @@
                     <form method="post" action="Kupi">
 
                         <div th:if="${sale == false}">
-                            <th th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Trenutno imaete ' + user.points + ' poen(a), Unesi broj poena => '}"></th>
+                            <th th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="#{bookStore.currentPoints} + ${user.points} + #{bookStore.pointInput}"></th>
                             <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="number" name="points" value="0" min="0" th:max="${user.points}"/></th>
                         </div>
                         <div th:if="${sale == true}">
                             <input type="hidden" name="points" th:value="0">
-                            <th colspan="2" th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="${'Akcija je u toku, poeni su ukinuti !'}"></th>
+                            <th colspan="2" th:unless="${#lists.isEmpty(session.shoppingCart)}" th:text="#{bookStore.actionInProgress}"></th>
                         </div>
                         <input type="hidden" name="finalPrice" th:value="${finalPrice}">
-                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right" th:text="${'Ukupna cena: ' + finalPrice}"></th>
-                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="submit" value="Kupi"/></th>
+                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}" class="float-right" th:text="#{bookStore.finalPrice} + ${finalPrice}"></th>
+                        <th th:unless="${#lists.isEmpty(session.shoppingCart)}"><input type="submit" th:value="#{bookStore.buy}"/></th>
                     </form>
                 </tr>
             </table>
