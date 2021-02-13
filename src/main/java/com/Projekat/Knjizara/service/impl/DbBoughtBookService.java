@@ -27,6 +27,9 @@ public class DbBoughtBookService implements BoughtBookService {
     }
 
     @Override
+    public List<BoughtBook> findUserBoughtBooks(String username) { return boughtBookDao.findUserBoughtBooks(username); }
+
+    @Override
     public List<BoughtBook> findAll() {
         return boughtBookDao.findAll();
     }

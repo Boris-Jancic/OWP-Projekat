@@ -6,6 +6,7 @@ import com.Projekat.Knjizara.models.enums.ELetter;
 import com.Projekat.Knjizara.models.enums.EStatus;
 import com.Projekat.Knjizara.models.enums.EType;
 import com.Projekat.Knjizara.service.BookService;
+import com.Projekat.Knjizara.service.BoughtBookService;
 import com.Projekat.Knjizara.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +45,9 @@ public class BookController {
 
     @Autowired
     private ServletContext servletContext;
+
+    @Autowired
+    private BoughtBookService boughtBookService;
 
     @Autowired
     private HttpSession session;
@@ -99,10 +103,22 @@ public class BookController {
 
         Book book = bookService.findOne(isbn);
         List<Comment> comments = commentService.findBookComments(isbn);
+        List<BoughtBook> boughtBooks = boughtBookService.findUserBoughtBooks(loggedUser.getUserName());
+
+        boolean bought = false;
+        for (BoughtBook boughtBook : boughtBooks) {
+            System.out.println(boughtBook);
+            if (boughtBook.getBook().getIsbn().equals(isbn)) {
+                bought = true;
+                break;
+            }
+            System.out.println(bought);
+        }
 
         ModelAndView result = new ModelAndView("specificBook");
         result.addObject("user", loggedUser);
         result.addObject("book", book);
+        result.addObject("bought", bought);
         result.addObject("comments", comments);
         return result;
     }

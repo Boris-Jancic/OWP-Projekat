@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -89,6 +88,13 @@ public class BoughtBookDaoImpl implements BoughtBookDao {
         String sql = "SELECT * FROM boughtbooks " +
                         "WHERE idReceipt = ?";
         return jdbcTemplate.query(sql, new BoughtBookRowMapper(), id);
+    }
+
+    @Override
+    public List<BoughtBook> findUserBoughtBooks(String username) {
+        String sql = "SELECT * FROM boughtbooks " +
+                "WHERE username = ?";
+        return jdbcTemplate.query(sql, new BoughtBookRowMapper(), username);
     }
 
     @Override

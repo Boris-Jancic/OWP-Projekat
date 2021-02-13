@@ -119,7 +119,7 @@
             <form method="get" action="Recenzija" th:if="!${user.isAdmin()}">
                 <input type="hidden" name="username" th:value="${user.userName}">
                 <input type="hidden" name="isbn" th:value="${book.isbn}">
-                <input type="submit" class="btnSubmit fadeIn fourth" th:value="#{bookStore.leaveComment}">
+                <input th:if="${bought}" type="submit" class="btnSubmit fadeIn fourth" th:value="#{bookStore.leaveComment}">
             </form>
 
             <br>

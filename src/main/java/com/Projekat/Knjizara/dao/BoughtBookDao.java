@@ -12,6 +12,8 @@ public interface BoughtBookDao {
 
     public List<BoughtBook> findBoughtBooksOnReceipt(String id);
 
+    public List<BoughtBook> findUserBoughtBooks(String username);
+
     public List<BoughtBook> findAll();
 
     public List<Report> report(Date from, Date to);
